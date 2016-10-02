@@ -1,0 +1,19 @@
+Source: stromx-sl
+Priority: extra
+Maintainer: Matthias Fuchs <stromx-devel@googlegroups.com>
+Build-Depends: debhelper (>= 7.0.50~), cmake, cdbs, libstromx-dev, libcppunit-dev
+Standards-Version: 3.9.1
+Section: libs
+Homepage: http://www.stromx.org
+
+Package: libstromx-sl
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Stromx operators structured light scanning
+
+Package: libstromx-sl-dev
+Section: libdevel
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}, libstromx-sl (= ${binary:Version})
+Description: Development files for stromx-sl
