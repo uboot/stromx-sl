@@ -65,5 +65,6 @@ endif(WIN32)
 
 set(LOCALE_DIR "${CMAKE_INSTALL_PREFIX}/${LOCALE_SUFFIX}")
 
+add_subdirectory(slstudio)
 add_subdirectory(stromx)
 

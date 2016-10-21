@@ -1,0 +1,3 @@
+[submodule "slstudio"]
+	path = slstudio
+	url = git@github.com:uboot/slstudio.git
