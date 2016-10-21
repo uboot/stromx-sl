@@ -4,6 +4,8 @@ configure_file (
 )
 
 include_directories (
+    ${CMAKE_SOURCE_DIR}/slstudio/src
+    ${CMAKE_BINARY_DIR}/slstudio/src
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_BINARY_DIR}
 )

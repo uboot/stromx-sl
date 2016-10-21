@@ -27,5 +27,6 @@ target_link_libraries (stromx_sl_test
     ${CMAKE_DL_LIBS}
     ${stromx_RUNTIME_LIB}
     ${stromx_CVSUPPORT_LIB}
+    slalgorithm
 )
 

@@ -27,6 +27,8 @@
 #include <stromx/runtime/String.h>
 #include <stromx/runtime/Variant.h>
 
+#include <codec/CodecGrayCode.h>
+
 #include "stromx/sl/Locale.h"
 
 
@@ -78,6 +80,7 @@ void Encode::setParameter(const unsigned int id, const runtime::Data& value)
 
 void Encode::execute(runtime::DataProvider& provider)
 {
+    EncoderGrayCode codec(1024, 768, CodecDirBoth);
 }
 
 const std::vector<const runtime::Input*> Encode::setupInputs()

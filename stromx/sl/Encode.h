@@ -21,8 +21,6 @@
 
 #include "stromx/sl/Sl.h"
 
-
-
 namespace stromx
 {
 namespace sl
