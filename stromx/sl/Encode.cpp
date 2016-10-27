@@ -20,7 +20,7 @@
 #include <stromx/runtime/EnumParameter.h>
 #include <stromx/runtime/Id2DataPair.h>
 #include <stromx/runtime/Image.h>
-#include <stromx/runtime/List.h>
+#include <stromx/runtime/NumericParameter.h>
 #include <stromx/runtime/OperatorException.h>
 #include <stromx/runtime/Matrix.h>
 #include <stromx/runtime/ReadAccess.h>
@@ -30,7 +30,6 @@
 #include <codec/Codec.h>
 
 #include "stromx/sl/Locale.h"
-
 
 using namespace stromx::runtime;
     
@@ -99,7 +98,41 @@ const std::vector<const runtime::Output*> Encode::setupOutputs()
 
 const std::vector<const runtime::Parameter*> Encode::setupParameters()
 {
-    std::vector<const Parameter*> parameters;                                
+    std::vector<const Parameter*> parameters;
+    
+    EnumParameter* codecType = new EnumParameter(CODEC_TYPE);
+    codecType->setTitle(L_("Codec"));
+    codecType->setAccessMode(Parameter::INITIALIZED_WRITE);
+    codecType->add(EnumDescription(Enum(codecTypePhaseShift2x3), L_("Phase shift 2x3")));
+    codecType->add(EnumDescription(Enum(codecTypePhaseShift3), L_("Phase shift 3")));
+    codecType->add(EnumDescription(Enum(codecTypePhaseShift3FastWrap), L_("Phase shift 3 fast wrap")));
+    codecType->add(EnumDescription(Enum(codecTypePhaseShift3Unwrap), L_("Phase shift 3 unwrap")));
+    codecType->add(EnumDescription(Enum(codecTypePhaseShift4), L_("Phase shift 4")));
+    codecType->add(EnumDescription(Enum(codecTypeGrayCode), L_("Gray code")));
+    codecType->add(EnumDescription(Enum(codecTypePhaseShift2p1), L_("Phase shift 2p1")));
+    codecType->add(EnumDescription(Enum(codecTypeFastRatio), L_("Fast ratio")));
+    codecType->add(EnumDescription(Enum(codecTypePhaseShiftModulated), L_("Phase shift modulated")));
+    codecType->add(EnumDescription(Enum(codecTypePhaseShiftMicro), L_("Phase shift micro")));
+    codecType->add(EnumDescription(Enum(codecTypePhaseShiftNStep), L_("Phase shift N step")));
+    parameters.push_back(codecType);
+    
+    NumericParameter<UInt32>* width = new NumericParameter<UInt32>(WIDTH);
+    width->setTitle(L_("Width"));
+    width->setAccessMode(Parameter::INITIALIZED_WRITE);
+    parameters.push_back(width);
+    
+    NumericParameter<UInt32>* height = new NumericParameter<UInt32>(HEIGHT);
+    height->setTitle(L_("Height"));
+    height->setAccessMode(Parameter::INITIALIZED_WRITE);
+    parameters.push_back(height);
+    
+    EnumParameter* direction = new EnumParameter(CODEC_TYPE);
+    direction->setTitle(L_("Direction"));
+    direction->setAccessMode(Parameter::INITIALIZED_WRITE);
+    direction->add(EnumDescription(Enum(CodecDirHorizontal), L_("Horizontal")));
+    direction->add(EnumDescription(Enum(CodecDirVertical), L_("Vertical")));
+    direction->add(EnumDescription(Enum(CodecDirBoth), L_("Both direction")));
+    parameters.push_back(direction);
                                 
     return parameters;
 }

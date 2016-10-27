@@ -31,6 +31,10 @@ class STROMX_SL_API Encode : public runtime::OperatorKernel
 public:      
     enum DataId
     {
+        CODEC_TYPE,
+        WIDTH,
+        HEIGHT,
+        DIRECTION
     };
     
     Encode();
