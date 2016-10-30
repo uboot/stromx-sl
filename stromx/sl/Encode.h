@@ -21,6 +21,7 @@
 
 #include "stromx/sl/Sl.h"
 
+class Encoder;
 namespace stromx
 {
 namespace sl
@@ -34,15 +35,17 @@ public:
         CODEC_TYPE,
         WIDTH,
         HEIGHT,
-        DIRECTION
+        DIRECTION,
+        PATTERN
     };
     
     Encode();
-    ~Encode();
     
     virtual OperatorKernel* clone() const { return new Encode; }
     virtual const runtime::DataRef getParameter(const unsigned int id) const;
     virtual void setParameter(const unsigned int id, const runtime::Data& value);
+    virtual void activate();
+    virtual void deactivate();
     virtual void execute(runtime::DataProvider& provider);
     
 private:
@@ -53,6 +56,13 @@ private:
     static const std::vector<const runtime::Input*> setupInputs();
     static const std::vector<const runtime::Output*> setupOutputs();
     static const std::vector<const runtime::Parameter*> setupParameters();
+    
+    Encoder* m_encoder;
+    runtime::Enum m_codecType;
+    runtime::Enum m_direction;
+    runtime::UInt32 m_width;
+    runtime::UInt32 m_height;
+    unsigned int m_currentPattern;
 }; 
       
 }

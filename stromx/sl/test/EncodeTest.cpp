@@ -28,10 +28,13 @@
 
 #include "stromx/sl/Encode.h"
 
+using namespace stromx::runtime;
+
 namespace stromx
 {
 namespace sl
 {
+
 
 class EncodeTest : public CPPUNIT_NS :: TestFixture
 {
@@ -49,20 +52,31 @@ class EncodeTest : public CPPUNIT_NS :: TestFixture
         void testExecute();
         
     private:
-        runtime::OperatorTester* m_operator;
+        OperatorTester* m_operator;
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION (EncodeTest);
 
 void EncodeTest::setUp ( void )
 {
-    m_operator = new runtime::OperatorTester(new Encode());
+    m_operator = new OperatorTester(new Encode());
     m_operator->initialize();
-    m_operator->activate();
 }
 
 void EncodeTest::testExecute()
 {
+    m_operator->setParameter(Encode::WIDTH, UInt32(100));
+    m_operator->setParameter(Encode::HEIGHT, UInt32(50));
+    m_operator->activate();
+    
+    for (int i = 0; i < 18; ++i)
+    {
+        DataContainer pattern = m_operator->getOutputData(Encode::PATTERN);
+        const Image & image = ReadAccess(pattern).get<Image>();
+        std::string filename = "EncodeTest_testExecute_" + std::to_string(i) + ".png";
+        cvsupport::Image::save(filename, image);
+        m_operator->clearOutputData(Encode::PATTERN);
+    }
 }
 
 void EncodeTest::tearDown ( void )
