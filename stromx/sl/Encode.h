@@ -14,8 +14,8 @@
 *  limitations under the License.
 */
 
-#ifndef STROMX_SL_ENCODERBASE_H
-#define STROMX_SL_ENCODERBASE_H
+#ifndef STROMX_SL_ENCODE_H
+#define STROMX_SL_ENCODE_H
 
 #include <stromx/runtime/OperatorKernel.h>
 
@@ -27,7 +27,7 @@ namespace stromx
 namespace sl
 {
 
-class STROMX_SL_API EncoderBase : public runtime::OperatorKernel
+class STROMX_SL_API Encode : public runtime::OperatorKernel
 {   
 public:      
     enum DataId
@@ -36,36 +36,36 @@ public:
         WIDTH,
         HEIGHT,
         DIRECTION,
-        TRIGGER
+        PATTERN
     };
     
-    EncoderBase(const std::string & type);
+    Encode();
     
+    virtual OperatorKernel* clone() const { return new Encode; }
     virtual const runtime::DataRef getParameter(const unsigned int id) const;
     virtual void setParameter(const unsigned int id, const runtime::Data& value);
-    virtual void initialize();
     virtual void activate();
     virtual void deactivate();
-    
-protected:
-    Encoder* currentEncoder() { return m_encoder; }
+    virtual void execute(runtime::DataProvider& provider);
     
 private:
+    static const std::string TYPE;
     static const std::string PACKAGE;
     static const runtime::Version VERSION; 
     
-    virtual const std::vector<const runtime::Input*> setupInputs();
-    virtual const std::vector<const runtime::Output*> setupOutputs();
-    virtual const std::vector<const runtime::Parameter*> setupParameters();
+    static const std::vector<const runtime::Input*> setupInputs();
+    static const std::vector<const runtime::Output*> setupOutputs();
+    static const std::vector<const runtime::Parameter*> setupParameters();
     
     Encoder* m_encoder;
     runtime::Enum m_codecType;
     runtime::Enum m_direction;
     runtime::UInt32 m_width;
     runtime::UInt32 m_height;
+    unsigned int m_currentPattern;
 }; 
       
 }
 }
 
-#endif // STROMX_SL_ENCODERBASE_H
+#endif // STROMX_SL_ENCODE_H

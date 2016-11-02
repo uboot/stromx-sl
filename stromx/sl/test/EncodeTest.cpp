@@ -26,7 +26,7 @@
 #include <stromx/runtime/String.h>
 #include <stromx/cvsupport/Image.h>
 
-#include "stromx/sl/OpenGlProjector.h"
+#include "stromx/sl/Encode.h"
 
 using namespace stromx::runtime;
 
@@ -36,47 +36,50 @@ namespace sl
 {
 
 
-class OpenGlProjectorTest : public CPPUNIT_NS :: TestFixture
+class EncodeTest : public CPPUNIT_NS :: TestFixture
 {
-    CPPUNIT_TEST_SUITE (OpenGlProjectorTest);
-    CPPUNIT_TEST (testExecuteGrayCode);
+    CPPUNIT_TEST_SUITE (EncodeTest);
+    CPPUNIT_TEST (testExecute);
     CPPUNIT_TEST_SUITE_END ();
 
     public:
-        OpenGlProjectorTest() : m_operator(0) {}
+        EncodeTest() : m_operator(0) {}
         
         void setUp();
         void tearDown();
 
     protected:
-        void testExecuteGrayCode();
+        void testExecute();
         
     private:
         OperatorTester* m_operator;
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION (OpenGlProjectorTest);
+CPPUNIT_TEST_SUITE_REGISTRATION (EncodeTest);
 
-void OpenGlProjectorTest::setUp ( void )
+void EncodeTest::setUp ( void )
 {
-    m_operator = new OperatorTester(new OpenGlProjector());
+    m_operator = new OperatorTester(new Encode());
     m_operator->initialize();
 }
 
-void OpenGlProjectorTest::testExecuteGrayCode()
+void EncodeTest::testExecute()
 {
-    m_operator->setParameter(EncoderBase::WIDTH, UInt32(100));
-    m_operator->setParameter(EncoderBase::HEIGHT, UInt32(50));
+    m_operator->setParameter(Encode::WIDTH, UInt32(100));
+    m_operator->setParameter(Encode::HEIGHT, UInt32(50));
     m_operator->activate();
     
     for (int i = 0; i < 18; ++i)
     {
-        DataContainer trigger = m_operator->getOutputData(EncoderBase::TRIGGER);
-        m_operator->clearOutputData(EncoderBase::TRIGGER);
+        DataContainer pattern = m_operator->getOutputData(Encode::PATTERN);
+        const Image & image = ReadAccess(pattern).get<Image>();
+        std::string filename = "EncodeTest_testExecute_" + std::to_string(i) + ".png";
+        cvsupport::Image::save(filename, image);
+        m_operator->clearOutputData(Encode::PATTERN);
     }
 }
 
-void OpenGlProjectorTest::tearDown ( void )
+void EncodeTest::tearDown ( void )
 {
     delete m_operator;
 }

@@ -12,11 +12,10 @@ include_directories (
 )
 
 set (SOURCES 
-    ../EncoderBase.cpp
-    ../OpenGlProjector.cpp
+    ../Encode.cpp
     ../Sl.cpp
     main.cpp
-    OpenGlProjectorTest.cpp
+    EncodeTest.cpp
 )
 
 add_executable(stromx_sl_test ${SOURCES})

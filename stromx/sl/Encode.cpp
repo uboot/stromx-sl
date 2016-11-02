@@ -14,12 +14,20 @@
 *  limitations under the License.
 */
 
-#include "stromx/sl/EncoderBase.h"
+#include "stromx/sl/Encode.h"
 
+#include <stromx/runtime/DataProvider.h>
 #include <stromx/runtime/EnumParameter.h>
+#include <stromx/runtime/Id2DataPair.h>
+#include <stromx/runtime/Image.h>
 #include <stromx/runtime/NumericParameter.h>
 #include <stromx/runtime/OperatorException.h>
+#include <stromx/runtime/Matrix.h>
+#include <stromx/runtime/ReadAccess.h>
+#include <stromx/runtime/String.h>
 #include <stromx/runtime/Variant.h>
+
+#include <stromx/cvsupport/Image.h>
 
 #include <codec/Codec.h>
 
@@ -31,23 +39,22 @@ namespace stromx
 {
 namespace sl
 {        
-const std::string EncoderBase::PACKAGE(STROMX_SL_PACKAGE_NAME);
-const runtime::Version EncoderBase::VERSION(0, 1, 0);
+
+const std::string Encode::TYPE("Encode");
+
+const std::string Encode::PACKAGE(STROMX_SL_PACKAGE_NAME);
+const runtime::Version Encode::VERSION(0, 1, 0);
     
-EncoderBase::EncoderBase(const std::string & type)
-    : OperatorKernel(type, PACKAGE, VERSION)
-    , m_encoder(0)
-    , m_codecType(codecTypeGrayCode)
-    , m_direction(CodecDirBoth)
+Encode::Encode()
+  : OperatorKernel(TYPE, PACKAGE, VERSION, setupInputs(), setupOutputs(), setupParameters())
+  , m_encoder(0)
+  , m_codecType(codecTypeGrayCode)
+  , m_direction(CodecDirBoth)
+  , m_currentPattern(0)
 {
 }
 
-void EncoderBase::initialize()
-{
-    OperatorKernel::initialize(setupInputs(), setupOutputs(), setupParameters());
-}
-
-const runtime::DataRef EncoderBase::getParameter(const unsigned int id) const
+const runtime::DataRef Encode::getParameter(const unsigned int id) const
 {
     switch(id)
     {
@@ -64,7 +71,7 @@ const runtime::DataRef EncoderBase::getParameter(const unsigned int id) const
     }
 }
 
-void EncoderBase::setParameter(const unsigned int id, const runtime::Data& value)
+void Encode::setParameter(const unsigned int id, const runtime::Data& value)
 {
     try
     {
@@ -92,36 +99,48 @@ void EncoderBase::setParameter(const unsigned int id, const runtime::Data& value
     }
 }
 
-void EncoderBase::activate()
+void Encode::activate()
 {
     m_encoder = Encoder::NewEncoder(CodecType(int(m_codecType)), m_width,
                                     m_height, CodecDir(int(m_direction)));
+    m_currentPattern = 0;
 }
 
-void EncoderBase::deactivate()
+void Encode::deactivate()
 {
     delete m_encoder;
 }
 
-const std::vector<const runtime::Input*> EncoderBase::setupInputs()
+void Encode::execute(runtime::DataProvider& provider)
+{
+    cv::Mat pattern = m_encoder->getEncodingPattern(m_currentPattern);
+    runtime::DataContainer out(new cvsupport::Image(pattern));
+    runtime::Id2DataPair patternPair(PATTERN, out);
+    provider.sendOutputData(patternPair);
+    
+    m_currentPattern += 1;
+    m_currentPattern %= m_encoder->getNPatterns();
+}
+
+const std::vector<const runtime::Input*> Encode::setupInputs()
 {
     std::vector<const Input*> inputs;
                     
     return inputs;
 }
 
-const std::vector<const runtime::Output*> EncoderBase::setupOutputs()
+const std::vector<const runtime::Output*> Encode::setupOutputs()
 {
     std::vector<const runtime::Output*> outputs;
     
-    Output* trigger = new Output(TRIGGER, runtime::Variant::TRIGGER);
-    trigger->setTitle(L_("Trigger"));
-    outputs.push_back(trigger);
+    Output* pattern = new Output(PATTERN, runtime::Variant::BGR_24_IMAGE);
+    pattern->setTitle(L_("Pattern"));
+    outputs.push_back(pattern);
     
     return outputs;
 }
 
-const std::vector<const runtime::Parameter*> EncoderBase::setupParameters()
+const std::vector<const runtime::Parameter*> Encode::setupParameters()
 {
     std::vector<const Parameter*> parameters;
     

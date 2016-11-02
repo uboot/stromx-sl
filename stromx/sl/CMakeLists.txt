@@ -11,8 +11,7 @@ include_directories (
 )
 
 set (SOURCES 
-    EncoderBase.cpp
-    OpenGlProjector.cpp
+    Encode.cpp
     Sl.cpp
 )
 
