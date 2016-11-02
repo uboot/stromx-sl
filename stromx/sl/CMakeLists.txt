@@ -6,12 +6,14 @@ configure_file (
 include_directories (
     ${CMAKE_SOURCE_DIR}/slstudio/src
     ${CMAKE_BINARY_DIR}/slstudio/src
+    ${CMAKE_BINARY_DIR}/slstudio/src/projector
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_BINARY_DIR}
 )
 
 set (SOURCES 
     Encode.cpp
+    OpenGlProjector.cpp
     Sl.cpp
 )
 
@@ -28,6 +30,7 @@ set_target_properties (stromx_sl PROPERTIES
 target_link_libraries (stromx_sl
     ${stromx_RUNTIME_LIB}
     slalgorithm
+    slprojector
 )
 
 if(WIN32)

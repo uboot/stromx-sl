@@ -46,11 +46,11 @@ const std::string Encode::PACKAGE(STROMX_SL_PACKAGE_NAME);
 const runtime::Version Encode::VERSION(0, 1, 0);
     
 Encode::Encode()
-  : OperatorKernel(TYPE, PACKAGE, VERSION, setupInputs(), setupOutputs(), setupParameters())
-  , m_encoder(0)
-  , m_codecType(codecTypeGrayCode)
-  , m_direction(CodecDirBoth)
-  , m_currentPattern(0)
+    : OperatorKernel(TYPE, PACKAGE, VERSION, setupInputs(), setupOutputs(), setupParameters())
+    , m_encoder(0)
+    , m_codecType(codecTypeGrayCode)
+    , m_direction(CodecDirBoth)
+    , m_currentPattern(0)
 {
 }
 
@@ -133,7 +133,7 @@ const std::vector<const runtime::Output*> Encode::setupOutputs()
 {
     std::vector<const runtime::Output*> outputs;
     
-    Output* pattern = new Output(PATTERN, runtime::Variant::BGR_24_IMAGE);
+    Output* pattern = new Output(PATTERN, runtime::Variant::RGB_24_IMAGE);
     pattern->setTitle(L_("Pattern"));
     outputs.push_back(pattern);
     
