@@ -13,9 +13,11 @@ include_directories (
 
 set (SOURCES 
     ../Encode.cpp
+    ../OpenGlProjector.cpp
     ../Sl.cpp
     main.cpp
     EncodeTest.cpp
+    OpenGlProjectorTest.cpp
 )
 
 add_executable(stromx_sl_test ${SOURCES})
@@ -28,5 +30,6 @@ target_link_libraries (stromx_sl_test
     ${stromx_RUNTIME_LIB}
     ${stromx_CVSUPPORT_LIB}
     slalgorithm
+    slprojector
 )
 
