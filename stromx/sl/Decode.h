@@ -14,21 +14,21 @@
 *  limitations under the License.
 */
 
-#ifndef STROMX_SL_ENCODE_H
-#define STROMX_SL_ENCODE_H
+#ifndef STROMX_SL_DECODE_H
+#define STROMX_SL_DECODE_H
 
 #include <stromx/runtime/OperatorKernel.h>
 
 #include "stromx/sl/Sl.h"
 
-class Encoder;
+class Decoder;
 
 namespace stromx
 {
 namespace sl
 {
 
-class STROMX_SL_API Encode : public runtime::OperatorKernel
+class STROMX_SL_API Decode : public runtime::OperatorKernel
 {   
 public:      
     enum DataId
@@ -40,9 +40,9 @@ public:
         PATTERN
     };
     
-    Encode();
+    Decode();
     
-    virtual OperatorKernel* clone() const { return new Encode; }
+    virtual OperatorKernel* clone() const { return new Decode; }
     virtual const runtime::DataRef getParameter(const unsigned int id) const;
     virtual void setParameter(const unsigned int id, const runtime::Data& value);
     virtual void activate();
@@ -58,7 +58,7 @@ private:
     static const std::vector<const runtime::Output*> setupOutputs();
     static const std::vector<const runtime::Parameter*> setupParameters();
     
-    Encoder* m_encoder;
+    Decoder* m_decoder;
     runtime::Enum m_codecType;
     runtime::Enum m_direction;
     runtime::UInt32 m_width;
@@ -69,4 +69,4 @@ private:
 }
 }
 
-#endif // STROMX_SL_ENCODE_H
+#endif // STROMX_SL_DECODE_H

@@ -12,11 +12,13 @@ include_directories (
 )
 
 set (SOURCES 
+    ../Decode.cpp
     ../Encode.cpp
     ../OpenGlProjector.cpp
     ../Sl.cpp
-    main.cpp
+    DecodeTest.cpp
     EncodeTest.cpp
+    main.cpp
     OpenGlProjectorTest.cpp
 )
 
