@@ -1,7 +1,7 @@
 Source: stromx-sl
 Priority: extra
 Maintainer: Matthias Fuchs <stromx-devel@googlegroups.com>
-Build-Depends: debhelper (>= 7.0.50~), cmake, cdbs, libstromx-dev, libcppunit-dev
+Build-Depends: debhelper (>= 7.0.50~), cmake, cdbs, libstromx-dev, libglew-dev, libgl1-mesa-dev, libcppunit-dev
 Standards-Version: 3.9.1
 Section: libs
 Homepage: http://www.stromx.org
