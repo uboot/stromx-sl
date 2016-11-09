@@ -28,6 +28,7 @@
 #include <stromx/runtime/Variant.h>
 
 #include <stromx/cvsupport/Image.h>
+#include <stromx/cvsupport/Utilities.h>
 
 #include <codec/Codec.h>
 
@@ -113,11 +114,23 @@ void Decode::deactivate()
 
 void Decode::execute(runtime::DataProvider& provider)
 {
+    Id2DataPair inputMapper(PATTERN);
+    provider.receiveInputData(inputMapper);
+    ReadAccess access(inputMapper.data());
+    
+    const Image & image = access.get<Image>();
+    cv::Mat cvImage = cvsupport::getOpenCvMat(image);
+    m_decoder->setFrame(m_currentPattern, cvImage);
+    m_currentPattern++;
 }
 
 const std::vector<const runtime::Input*> Decode::setupInputs()
 {
     std::vector<const Input*> inputs;
+    
+    Input* pattern = new Input(PATTERN, runtime::Variant::RGB_24_IMAGE);
+    pattern->setTitle(L_("Pattern"));
+    inputs.push_back(pattern);
                     
     return inputs;
 }
@@ -126,9 +139,21 @@ const std::vector<const runtime::Output*> Decode::setupOutputs()
 {
     std::vector<const runtime::Output*> outputs;
     
-    Output* pattern = new Output(PATTERN, runtime::Variant::RGB_24_IMAGE);
-    pattern->setTitle(L_("Pattern"));
-    outputs.push_back(pattern);
+    Output* horizontal = new Output(HORIZONTAL, runtime::Variant::FLOAT_32_MATRIX);
+    horizontal->setTitle(L_("Horizontal encoding"));
+    outputs.push_back(horizontal);
+    
+    Output* vertical = new Output(VERTICAL, runtime::Variant::FLOAT_32_MATRIX);
+    vertical->setTitle(L_("Vertical encoding"));
+    outputs.push_back(vertical);
+    
+    Output* shading = new Output(SHADING, runtime::Variant::MONO_8_IMAGE);
+    shading->setTitle(L_("Shading"));
+    outputs.push_back(shading);
+    
+    Output* mask = new Output(MASK, runtime::Variant::MONO_16_IMAGE);
+    mask->setTitle(L_("Mask"));
+    outputs.push_back(mask);
     
     return outputs;
 }

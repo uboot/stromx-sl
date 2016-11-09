@@ -22,6 +22,8 @@
 #include <stromx/runtime/OperatorTester.h>
 #include <stromx/cvsupport/Image.h>
 
+#include <thread>
+
 #include "stromx/sl/OpenGlProjector.h"
 
 using namespace stromx::runtime;
@@ -36,6 +38,9 @@ class OpenGlProjectorTest : public CPPUNIT_NS :: TestFixture
 {
     CPPUNIT_TEST_SUITE (OpenGlProjectorTest);
     CPPUNIT_TEST (testExecuteImage);
+    CPPUNIT_TEST (testExecuteRow);
+    CPPUNIT_TEST (testExecuteColumn);
+    CPPUNIT_TEST (testExecutePixel);
     CPPUNIT_TEST_SUITE_END ();
 
     public:
@@ -46,12 +51,36 @@ class OpenGlProjectorTest : public CPPUNIT_NS :: TestFixture
 
     protected:
         void testExecuteImage();
+        void testExecuteRow();
+        void testExecuteColumn();
+        void testExecutePixel();
         
     private:
+        const static int SLEEP_MS;
+        const static int PATTERN_SIZE;
+        
+        static void fillWithPattern(runtime::Image* image);
+        
         OperatorTester* m_operator;
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION (OpenGlProjectorTest);
+
+const int OpenGlProjectorTest::SLEEP_MS = 100;
+const int OpenGlProjectorTest::PATTERN_SIZE = 20;
+
+void OpenGlProjectorTest::fillWithPattern(runtime::Image* image)
+{
+    for (unsigned int i = 0; i < image->rows(); ++i)
+    {
+        for(unsigned int j = 0; j < image->cols(); ++j)
+        {
+            int isRowSquare = (j / PATTERN_SIZE + 1) % 2;
+            int isColSquare = (i / PATTERN_SIZE) % 2;
+            image->at<char>(i, j) = j % 3 ? 0 : 255 * (isRowSquare ^ isColSquare);
+        }
+    }
+}
 
 void OpenGlProjectorTest::setUp ( void )
 {
@@ -62,15 +91,46 @@ void OpenGlProjectorTest::setUp ( void )
 void OpenGlProjectorTest::testExecuteImage()
 {
     m_operator->activate();
+    std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_MS)); 
     
     cvsupport::Image* image = new cvsupport::Image(300, 200, runtime::Image::RGB_24);
-    for (unsigned int i = 0; i < image->rows(); ++i)
-    {
-        for(unsigned int j = 0; j < image->cols(); ++j)
-        {
-            image->at<char>(i, j) = j % 3 ? 0 : 255;
-        }
-    }
+    fillWithPattern(image);
+    DataContainer container(image);
+    m_operator->setInputData(OpenGlProjector::IMAGE, container);
+    m_operator->setInputData(OpenGlProjector::IMAGE, container);
+}
+
+void OpenGlProjectorTest::testExecuteRow()
+{
+    m_operator->activate();
+    std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_MS)); 
+    
+    cvsupport::Image* image = new cvsupport::Image(300, 1, runtime::Image::RGB_24);
+    fillWithPattern(image);
+    DataContainer container(image);
+    m_operator->setInputData(OpenGlProjector::IMAGE, container);
+    m_operator->setInputData(OpenGlProjector::IMAGE, container);
+}
+
+void OpenGlProjectorTest::testExecuteColumn()
+{
+    m_operator->activate();
+    std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_MS)); 
+    
+    cvsupport::Image* image = new cvsupport::Image(1, 300, runtime::Image::RGB_24);
+    fillWithPattern(image);
+    DataContainer container(image);
+    m_operator->setInputData(OpenGlProjector::IMAGE, container);
+    m_operator->setInputData(OpenGlProjector::IMAGE, container);
+}
+
+void OpenGlProjectorTest::testExecutePixel()
+{
+    m_operator->activate();
+    std::this_thread::sleep_for(std::chrono::milliseconds(100)); 
+    
+    cvsupport::Image* image = new cvsupport::Image(1, 1, runtime::Image::RGB_24);
+    fillWithPattern(image);
     DataContainer container(image);
     m_operator->setInputData(OpenGlProjector::IMAGE, container);
     m_operator->setInputData(OpenGlProjector::IMAGE, container);

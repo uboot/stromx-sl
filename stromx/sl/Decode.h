@@ -37,7 +37,11 @@ public:
         WIDTH,
         HEIGHT,
         DIRECTION,
-        PATTERN
+        PATTERN,
+        HORIZONTAL,
+        VERTICAL,
+        SHADING,
+        MASK
     };
     
     Decode();
