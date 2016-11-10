@@ -65,6 +65,16 @@ void DecodeTest::testExecute()
     m_operator->setParameter(Decode::WIDTH, UInt32(100));
     m_operator->setParameter(Decode::HEIGHT, UInt32(50));
     m_operator->activate();
+    
+    for (int i = 0; i < 18; ++i)
+    {
+        std::string fileName = "gray_code_" + std::to_string(i) + ".png";
+        DataContainer image(new cvsupport::Image(fileName));
+        m_operator->setInputData(Decode::PATTERN, image);
+    }
+    
+    DataContainer horizontal = m_operator->getOutputData(Decode::HORIZONTAL);
+    cvsupport::Image::save("DecodeTest_testExecute_horizontal.png", ReadAccess(horizontal).get<Image>());
 }
 
 void DecodeTest::tearDown ( void )

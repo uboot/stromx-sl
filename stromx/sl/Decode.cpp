@@ -19,6 +19,7 @@
 #include <stromx/runtime/DataProvider.h>
 #include <stromx/runtime/EnumParameter.h>
 #include <stromx/runtime/Id2DataPair.h>
+#include <stromx/runtime/Id2DataComposite.h>
 #include <stromx/runtime/Image.h>
 #include <stromx/runtime/NumericParameter.h>
 #include <stromx/runtime/OperatorException.h>
@@ -122,6 +123,28 @@ void Decode::execute(runtime::DataProvider& provider)
     cv::Mat cvImage = cvsupport::getOpenCvMat(image);
     m_decoder->setFrame(m_currentPattern, cvImage);
     m_currentPattern++;
+    
+    if (m_currentPattern == m_decoder->getNPatterns())
+    {
+        cv::Mat cvHorizontal;
+        cv::Mat cvVertical;
+        cv::Mat cvShading;
+        cv::Mat cvMask;
+        
+        m_decoder->decodeFrames(cvHorizontal, cvVertical, cvMask, cvShading);
+        
+        DataContainer horizontal(new cvsupport::Image(cvHorizontal));
+        DataContainer vertical(new cvsupport::Image(cvVertical));
+        DataContainer mask(new cvsupport::Image(cvMask));
+        DataContainer shading(new cvsupport::Image(cvShading));
+        
+        provider.sendOutputData(
+            Id2DataPair(HORIZONTAL, horizontal) &&
+            Id2DataPair(VERTICAL, vertical) &&
+            Id2DataPair(MASK, mask) &&
+            Id2DataPair(SHADING, shading)
+        );
+    }
 }
 
 const std::vector<const runtime::Input*> Decode::setupInputs()
@@ -129,7 +152,7 @@ const std::vector<const runtime::Input*> Decode::setupInputs()
     std::vector<const Input*> inputs;
     
     Input* pattern = new Input(PATTERN, runtime::Variant::RGB_24_IMAGE);
-    pattern->setTitle(L_("Pattern"));
+    pattern->setTitle(L_("Pattern image"));
     inputs.push_back(pattern);
                     
     return inputs;
