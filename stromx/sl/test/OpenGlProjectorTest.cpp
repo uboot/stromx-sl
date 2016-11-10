@@ -57,6 +57,7 @@ class OpenGlProjectorTest : public CPPUNIT_NS :: TestFixture
         
     private:
         const static int SLEEP_MS;
+        const static int IMAGE_SIZE;
         const static int PATTERN_SIZE;
         
         static void fillWithPattern(runtime::Image* image);
@@ -67,7 +68,8 @@ class OpenGlProjectorTest : public CPPUNIT_NS :: TestFixture
 CPPUNIT_TEST_SUITE_REGISTRATION (OpenGlProjectorTest);
 
 const int OpenGlProjectorTest::SLEEP_MS = 100;
-const int OpenGlProjectorTest::PATTERN_SIZE = 20;
+const int OpenGlProjectorTest::IMAGE_SIZE = 200;
+const int OpenGlProjectorTest::PATTERN_SIZE = 100;
 
 void OpenGlProjectorTest::fillWithPattern(runtime::Image* image)
 {
@@ -93,7 +95,8 @@ void OpenGlProjectorTest::testExecuteImage()
     m_operator->activate();
     std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_MS)); 
     
-    cvsupport::Image* image = new cvsupport::Image(300, 200, runtime::Image::RGB_24);
+    cvsupport::Image* image = new cvsupport::Image(IMAGE_SIZE, IMAGE_SIZE, 
+                                                   runtime::Image::RGB_24);
     fillWithPattern(image);
     DataContainer container(image);
     m_operator->setInputData(OpenGlProjector::IMAGE, container);
@@ -105,7 +108,7 @@ void OpenGlProjectorTest::testExecuteRow()
     m_operator->activate();
     std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_MS)); 
     
-    cvsupport::Image* image = new cvsupport::Image(300, 1, runtime::Image::RGB_24);
+    cvsupport::Image* image = new cvsupport::Image(IMAGE_SIZE, 1, runtime::Image::RGB_24);
     fillWithPattern(image);
     DataContainer container(image);
     m_operator->setInputData(OpenGlProjector::IMAGE, container);
@@ -117,7 +120,7 @@ void OpenGlProjectorTest::testExecuteColumn()
     m_operator->activate();
     std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_MS)); 
     
-    cvsupport::Image* image = new cvsupport::Image(1, 300, runtime::Image::RGB_24);
+    cvsupport::Image* image = new cvsupport::Image(1, IMAGE_SIZE, runtime::Image::RGB_24);
     fillWithPattern(image);
     DataContainer container(image);
     m_operator->setInputData(OpenGlProjector::IMAGE, container);
