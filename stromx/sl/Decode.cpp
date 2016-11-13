@@ -29,6 +29,7 @@
 #include <stromx/runtime/Variant.h>
 
 #include <stromx/cvsupport/Image.h>
+#include <stromx/cvsupport/Matrix.h>
 #include <stromx/cvsupport/Utilities.h>
 
 #include <codec/Codec.h>
@@ -126,15 +127,15 @@ void Decode::execute(runtime::DataProvider& provider)
     
     if (m_currentPattern == m_decoder->getNPatterns())
     {
-        cv::Mat cvHorizontal;
-        cv::Mat cvVertical;
+        cv::Mat cvHorizontal(m_height, m_width, CV_32F);
+        cv::Mat cvVertical(m_height, m_width, CV_32F);
         cv::Mat cvShading;
         cv::Mat cvMask;
         
         m_decoder->decodeFrames(cvHorizontal, cvVertical, cvMask, cvShading);
         
-        DataContainer horizontal(new cvsupport::Image(cvHorizontal));
-        DataContainer vertical(new cvsupport::Image(cvVertical));
+        DataContainer horizontal(new cvsupport::Matrix(cvHorizontal));
+        DataContainer vertical(new cvsupport::Matrix(cvVertical));
         DataContainer mask(new cvsupport::Image(cvMask));
         DataContainer shading(new cvsupport::Image(cvShading));
         

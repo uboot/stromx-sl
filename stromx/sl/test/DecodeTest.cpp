@@ -22,6 +22,7 @@
 #include <stromx/runtime/OperatorTester.h>
 #include <stromx/runtime/ReadAccess.h>
 #include <stromx/cvsupport/Image.h>
+#include <stromx/cvsupport/Matrix.h>
 
 #include "stromx/sl/Decode.h"
 
@@ -74,7 +75,7 @@ void DecodeTest::testExecute()
     }
     
     DataContainer horizontal = m_operator->getOutputData(Decode::HORIZONTAL);
-    cvsupport::Image::save("DecodeTest_testExecute_horizontal.png", ReadAccess(horizontal).get<Image>());
+    cvsupport::Matrix::save("DecodeTest_testExecute_horizontal.npy", ReadAccess(horizontal).get<Matrix>());
 }
 
 void DecodeTest::tearDown ( void )
