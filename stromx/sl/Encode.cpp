@@ -175,7 +175,7 @@ const std::vector<const runtime::Parameter*> Encode::setupParameters()
     direction->setAccessMode(Parameter::INITIALIZED_WRITE);
     direction->add(EnumDescription(Enum(CodecDirHorizontal), L_("Horizontal")));
     direction->add(EnumDescription(Enum(CodecDirVertical), L_("Vertical")));
-    direction->add(EnumDescription(Enum(CodecDirBoth), L_("Both direction")));
+    direction->add(EnumDescription(Enum(CodecDirBoth), L_("Both directions")));
     parameters.push_back(direction);
                                 
     return parameters;

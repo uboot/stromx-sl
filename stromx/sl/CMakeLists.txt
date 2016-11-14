@@ -30,6 +30,7 @@ set_target_properties (stromx_sl PROPERTIES
 
 target_link_libraries (stromx_sl
     ${stromx_RUNTIME_LIB}
+    ${stromx_CVSUPPORT_LIB}
     slalgorithm
     slprojector
 )

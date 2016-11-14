@@ -64,7 +64,7 @@ const runtime::DataRef OpenGlProjector::getParameter(const unsigned int id) cons
     }
 }
 
-void OpenGlProjector::setParameter(const unsigned int id, const runtime::Data& value)
+void OpenGlProjector::setParameter(const unsigned int id, const runtime::Data& /*value*/)
 {
     try
     {

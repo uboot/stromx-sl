@@ -5,7 +5,9 @@
 #include <stromx/runtime/Locale.h>
 #include <stromx/runtime/Registry.h>
 
+#include "stromx/sl/Decode.h"
 #include "stromx/sl/Encode.h"
+#include "stromx/sl/OpenGlProjector.h"
 
 namespace stromx
 {
@@ -15,7 +17,7 @@ namespace stromx
     }
 }
 
-int stromxRegisterZbar(stromx::runtime::Registry* registry)
+int stromxRegisterSl(stromx::runtime::Registry* registry)
 {
     using namespace stromx::sl;
     
@@ -23,7 +25,9 @@ int stromxRegisterZbar(stromx::runtime::Registry* registry)
     
     try
     {
-        registry->registerOperator(new Encode);    
+        registry->registerOperator(new Decode);  
+        registry->registerOperator(new Encode);  
+        registry->registerOperator(new OpenGlProjector);
     }
     catch(stromx::runtime::Exception & e)
     {

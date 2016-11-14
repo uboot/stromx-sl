@@ -44,6 +44,12 @@ public:
         MASK
     };
     
+    enum OperatorThread
+    {
+        INPUT_THREAD,
+        OUTPUT_THREAD
+    };
+    
     Decode();
     
     virtual OperatorKernel* clone() const { return new Decode; }

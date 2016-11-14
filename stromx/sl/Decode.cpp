@@ -154,6 +154,7 @@ const std::vector<const runtime::Input*> Decode::setupInputs()
     
     Input* pattern = new Input(PATTERN, runtime::Variant::RGB_24_IMAGE);
     pattern->setTitle(L_("Pattern image"));
+    pattern->setOperatorThread(INPUT_THREAD);
     inputs.push_back(pattern);
                     
     return inputs;
@@ -165,18 +166,22 @@ const std::vector<const runtime::Output*> Decode::setupOutputs()
     
     Output* horizontal = new Output(HORIZONTAL, runtime::Variant::FLOAT_32_MATRIX);
     horizontal->setTitle(L_("Horizontal encoding"));
+    horizontal->setOperatorThread(OUTPUT_THREAD);
     outputs.push_back(horizontal);
     
     Output* vertical = new Output(VERTICAL, runtime::Variant::FLOAT_32_MATRIX);
     vertical->setTitle(L_("Vertical encoding"));
+    vertical->setOperatorThread(OUTPUT_THREAD);
     outputs.push_back(vertical);
     
     Output* shading = new Output(SHADING, runtime::Variant::MONO_8_IMAGE);
     shading->setTitle(L_("Shading"));
+    shading->setOperatorThread(OUTPUT_THREAD);
     outputs.push_back(shading);
     
     Output* mask = new Output(MASK, runtime::Variant::MONO_16_IMAGE);
     mask->setTitle(L_("Mask"));
+    mask->setOperatorThread(OUTPUT_THREAD);
     outputs.push_back(mask);
     
     return outputs;
@@ -217,7 +222,7 @@ const std::vector<const runtime::Parameter*> Decode::setupParameters()
     direction->setAccessMode(Parameter::INITIALIZED_WRITE);
     direction->add(EnumDescription(Enum(CodecDirHorizontal), L_("Horizontal")));
     direction->add(EnumDescription(Enum(CodecDirVertical), L_("Vertical")));
-    direction->add(EnumDescription(Enum(CodecDirBoth), L_("Both direction")));
+    direction->add(EnumDescription(Enum(CodecDirBoth), L_("Both directions")));
     parameters.push_back(direction);
                                 
     return parameters;
