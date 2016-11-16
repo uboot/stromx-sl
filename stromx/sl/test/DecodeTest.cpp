@@ -37,7 +37,7 @@ namespace sl
 class DecodeTest : public CPPUNIT_NS :: TestFixture
 {
     CPPUNIT_TEST_SUITE (DecodeTest);
-    CPPUNIT_TEST (testExecute);
+    CPPUNIT_TEST (testExecuteGrayCode);
     CPPUNIT_TEST_SUITE_END ();
 
     public:
@@ -47,7 +47,7 @@ class DecodeTest : public CPPUNIT_NS :: TestFixture
         void tearDown();
 
     protected:
-        void testExecute();
+        void testExecuteGrayCode();
         
     private:
         OperatorTester* m_operator;
@@ -61,7 +61,7 @@ void DecodeTest::setUp ( void )
     m_operator->initialize();
 }
 
-void DecodeTest::testExecute()
+void DecodeTest::testExecuteGrayCode()
 {
     m_operator->setParameter(Decode::WIDTH, UInt32(100));
     m_operator->setParameter(Decode::HEIGHT, UInt32(50));
@@ -75,7 +75,7 @@ void DecodeTest::testExecute()
     }
     
     DataContainer horizontal = m_operator->getOutputData(Decode::HORIZONTAL);
-    cvsupport::Matrix::save("DecodeTest_testExecute_horizontal.npy", ReadAccess(horizontal).get<Matrix>());
+    cvsupport::Matrix::save("DecodeTest_testExecuteGrayCode_horizontal.npy", ReadAccess(horizontal).get<Matrix>());
 }
 
 void DecodeTest::tearDown ( void )

@@ -18,6 +18,8 @@
 #include <cppunit/TestAssert.h>
 #include <cppunit/TestFixture.h>
 
+#include <codec/Codec.h>
+
 #include <stromx/runtime/DataContainer.h>
 #include <stromx/runtime/OperatorTester.h>
 #include <stromx/runtime/ReadAccess.h>
@@ -36,7 +38,8 @@ namespace sl
 class EncodeTest : public CPPUNIT_NS :: TestFixture
 {
     CPPUNIT_TEST_SUITE (EncodeTest);
-    CPPUNIT_TEST (testExecute);
+    CPPUNIT_TEST (testExecuteGrayCode);
+    CPPUNIT_TEST (testExecutePhaseShift2x3);
     CPPUNIT_TEST_SUITE_END ();
 
     public:
@@ -46,7 +49,8 @@ class EncodeTest : public CPPUNIT_NS :: TestFixture
         void tearDown();
 
     protected:
-        void testExecute();
+        void testExecuteGrayCode();
+        void testExecutePhaseShift2x3();
         
     private:
         OperatorTester* m_operator;
@@ -60,7 +64,7 @@ void EncodeTest::setUp ( void )
     m_operator->initialize();
 }
 
-void EncodeTest::testExecute()
+void EncodeTest::testExecuteGrayCode()
 {
     m_operator->setParameter(Encode::WIDTH, UInt32(100));
     m_operator->setParameter(Encode::HEIGHT, UInt32(50));
@@ -70,7 +74,24 @@ void EncodeTest::testExecute()
     {
         DataContainer pattern = m_operator->getOutputData(Encode::PATTERN);
         const Image & image = ReadAccess(pattern).get<Image>();
-        std::string filename = "EncodeTest_testExecute_" + std::to_string(i) + ".png";
+        std::string filename = "EncodeTest_testExecuteGrayCode_" + std::to_string(i) + ".png";
+        cvsupport::Image::save(filename, image);
+        m_operator->clearOutputData(Encode::PATTERN);
+    }
+}
+
+void EncodeTest::testExecutePhaseShift2x3()
+{
+    m_operator->setParameter(Encode::WIDTH, UInt32(100));
+    m_operator->setParameter(Encode::HEIGHT, UInt32(50));
+    m_operator->setParameter(Encode::CODEC_TYPE, Enum(codecTypePhaseShift2x3));
+    m_operator->activate();
+    
+    for (int i = 0; i < 12; ++i)
+    {
+        DataContainer pattern = m_operator->getOutputData(Encode::PATTERN);
+        const Image & image = ReadAccess(pattern).get<Image>();
+        std::string filename = "EncodeTest_testExecutePhaseShift2x3_" + std::to_string(i) + ".png";
         cvsupport::Image::save(filename, image);
         m_operator->clearOutputData(Encode::PATTERN);
     }
