@@ -152,7 +152,7 @@ const std::vector<const runtime::Input*> Decode::setupInputs()
 {
     std::vector<const Input*> inputs;
     
-    Input* pattern = new Input(PATTERN, runtime::Variant::RGB_24_IMAGE);
+    Input* pattern = new Input(PATTERN, runtime::Variant::MONO_8_IMAGE);
     pattern->setTitle(L_("Pattern image"));
     pattern->setOperatorThread(INPUT_THREAD);
     inputs.push_back(pattern);

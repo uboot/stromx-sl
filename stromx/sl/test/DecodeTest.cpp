@@ -18,6 +18,8 @@
 #include <cppunit/TestAssert.h>
 #include <cppunit/TestFixture.h>
 
+#include <codec/Codec.h>
+
 #include <stromx/runtime/DataContainer.h>
 #include <stromx/runtime/OperatorTester.h>
 #include <stromx/runtime/ReadAccess.h>
@@ -38,6 +40,7 @@ class DecodeTest : public CPPUNIT_NS :: TestFixture
 {
     CPPUNIT_TEST_SUITE (DecodeTest);
     CPPUNIT_TEST (testExecuteGrayCode);
+    CPPUNIT_TEST (testExecutePhaseShift2x3);
     CPPUNIT_TEST_SUITE_END ();
 
     public:
@@ -48,6 +51,7 @@ class DecodeTest : public CPPUNIT_NS :: TestFixture
 
     protected:
         void testExecuteGrayCode();
+        void testExecutePhaseShift2x3();
         
     private:
         OperatorTester* m_operator;
@@ -74,8 +78,44 @@ void DecodeTest::testExecuteGrayCode()
         m_operator->setInputData(Decode::PATTERN, image);
     }
     
+    DataContainer shading = m_operator->getOutputData(Decode::SHADING);
+    cvsupport::Image::save("DecodeTest_testExecuteGrayCode_shading.png", ReadAccess(shading).get<Image>());
+    
+    DataContainer mask = m_operator->getOutputData(Decode::MASK);
+    cvsupport::Image::save("DecodeTest_testExecuteGrayCode_mask.png", ReadAccess(mask).get<Image>());
+    
     DataContainer horizontal = m_operator->getOutputData(Decode::HORIZONTAL);
     cvsupport::Matrix::save("DecodeTest_testExecuteGrayCode_horizontal.npy", ReadAccess(horizontal).get<Matrix>());
+    
+    DataContainer vertical = m_operator->getOutputData(Decode::VERTICAL);
+    cvsupport::Matrix::save("DecodeTest_testExecuteGrayCode_vertical.npy", ReadAccess(vertical).get<Matrix>());
+}
+
+void DecodeTest::testExecutePhaseShift2x3()
+{
+    m_operator->setParameter(Decode::WIDTH, UInt32(100));
+    m_operator->setParameter(Decode::HEIGHT, UInt32(50));
+    m_operator->setParameter(Decode::CODEC_TYPE, Enum(codecTypePhaseShift2x3));
+    m_operator->activate();
+    
+    for (int i = 0; i < 12; ++i)
+    {
+        std::string fileName = "phase_shift_2x3_" + std::to_string(i) + ".png";
+        DataContainer image(new cvsupport::Image(fileName));
+        m_operator->setInputData(Decode::PATTERN, image);
+    }
+    
+    DataContainer shading = m_operator->getOutputData(Decode::SHADING);
+    cvsupport::Image::save("DecodeTest_testExecutePhaseShift2x3_shading.png", ReadAccess(shading).get<Image>());
+    
+    DataContainer mask = m_operator->getOutputData(Decode::MASK);
+    cvsupport::Image::save("DecodeTest_testExecutePhaseShift2x3_mask.png", ReadAccess(mask).get<Image>());
+    
+    DataContainer horizontal = m_operator->getOutputData(Decode::HORIZONTAL);
+    cvsupport::Matrix::save("DecodeTest_testExecutePhaseShift2x3_horizontal.npy", ReadAccess(horizontal).get<Matrix>());
+    
+    DataContainer vertical = m_operator->getOutputData(Decode::VERTICAL);
+    cvsupport::Matrix::save("DecodeTest_testExecutePhaseShift2x3_vertical.npy", ReadAccess(vertical).get<Matrix>());
 }
 
 void DecodeTest::tearDown ( void )
