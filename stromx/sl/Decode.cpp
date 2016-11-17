@@ -167,11 +167,13 @@ const std::vector<const runtime::Output*> Decode::setupOutputs()
     Output* horizontal = new Output(HORIZONTAL, runtime::Variant::FLOAT_32_MATRIX);
     horizontal->setTitle(L_("Horizontal encoding"));
     horizontal->setOperatorThread(OUTPUT_THREAD);
+    horizontal->setVisualization(Variant::IMAGE);
     outputs.push_back(horizontal);
     
     Output* vertical = new Output(VERTICAL, runtime::Variant::FLOAT_32_MATRIX);
     vertical->setTitle(L_("Vertical encoding"));
     vertical->setOperatorThread(OUTPUT_THREAD);
+    horizontal->setVisualization(Variant::IMAGE);
     outputs.push_back(vertical);
     
     Output* shading = new Output(SHADING, runtime::Variant::MONO_8_IMAGE);
