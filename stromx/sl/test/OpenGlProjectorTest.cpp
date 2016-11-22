@@ -41,6 +41,7 @@ class OpenGlProjectorTest : public CPPUNIT_NS :: TestFixture
     CPPUNIT_TEST (testExecuteRow);
     CPPUNIT_TEST (testExecuteColumn);
     CPPUNIT_TEST (testExecutePixel);
+    CPPUNIT_TEST (testExecuteTwice);
     CPPUNIT_TEST_SUITE_END ();
 
     public:
@@ -54,6 +55,7 @@ class OpenGlProjectorTest : public CPPUNIT_NS :: TestFixture
         void testExecuteRow();
         void testExecuteColumn();
         void testExecutePixel();
+        void testExecuteTwice();
         
     private:
         const static int SLEEP_MS;
@@ -100,7 +102,7 @@ void OpenGlProjectorTest::testExecuteImage()
     fillWithPattern(image);
     DataContainer container(image);
     m_operator->setInputData(OpenGlProjector::IMAGE, container);
-    m_operator->setInputData(OpenGlProjector::IMAGE, container);
+    m_operator->setInputData(OpenGlProjector::IMAGE, DataContainer());
 }
 
 void OpenGlProjectorTest::testExecuteRow()
@@ -112,7 +114,7 @@ void OpenGlProjectorTest::testExecuteRow()
     fillWithPattern(image);
     DataContainer container(image);
     m_operator->setInputData(OpenGlProjector::IMAGE, container);
-    m_operator->setInputData(OpenGlProjector::IMAGE, container);
+    m_operator->setInputData(OpenGlProjector::IMAGE, DataContainer());
 }
 
 void OpenGlProjectorTest::testExecuteColumn()
@@ -124,7 +126,7 @@ void OpenGlProjectorTest::testExecuteColumn()
     fillWithPattern(image);
     DataContainer container(image);
     m_operator->setInputData(OpenGlProjector::IMAGE, container);
-    m_operator->setInputData(OpenGlProjector::IMAGE, container);
+    m_operator->setInputData(OpenGlProjector::IMAGE, DataContainer());
 }
 
 void OpenGlProjectorTest::testExecutePixel()
@@ -136,7 +138,23 @@ void OpenGlProjectorTest::testExecutePixel()
     fillWithPattern(image);
     DataContainer container(image);
     m_operator->setInputData(OpenGlProjector::IMAGE, container);
-    m_operator->setInputData(OpenGlProjector::IMAGE, container);
+    m_operator->setInputData(OpenGlProjector::IMAGE, DataContainer());
+}
+
+void OpenGlProjectorTest::testExecuteTwice()
+{
+    m_operator->activate();
+    std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_MS)); 
+    
+    cvsupport::Image* image1 = new cvsupport::Image(IMAGE_SIZE, IMAGE_SIZE, 
+                                                    runtime::Image::RGB_24);
+    cvsupport::Image* image2 = new cvsupport::Image(IMAGE_SIZE, IMAGE_SIZE, 
+                                                    runtime::Image::RGB_24);
+    fillWithPattern(image1);
+    fillWithPattern(image2);
+    m_operator->setInputData(OpenGlProjector::IMAGE, DataContainer(image1));
+    m_operator->setInputData(OpenGlProjector::IMAGE, DataContainer(image2));
+    m_operator->setInputData(OpenGlProjector::IMAGE, DataContainer());
 }
 
 void OpenGlProjectorTest::tearDown ( void )
