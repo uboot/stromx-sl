@@ -102,7 +102,7 @@ void OpenGlProjectorTest::testExecuteImage()
     fillWithPattern(image);
     DataContainer container(image);
     m_operator->setInputData(OpenGlProjector::IMAGE, container);
-    m_operator->setInputData(OpenGlProjector::IMAGE, DataContainer());
+    m_operator->getOutputData(OpenGlProjector::TRIGGER);
 }
 
 void OpenGlProjectorTest::testExecuteRow()
@@ -114,7 +114,7 @@ void OpenGlProjectorTest::testExecuteRow()
     fillWithPattern(image);
     DataContainer container(image);
     m_operator->setInputData(OpenGlProjector::IMAGE, container);
-    m_operator->setInputData(OpenGlProjector::IMAGE, DataContainer());
+    m_operator->getOutputData(OpenGlProjector::TRIGGER);
 }
 
 void OpenGlProjectorTest::testExecuteColumn()
@@ -126,7 +126,7 @@ void OpenGlProjectorTest::testExecuteColumn()
     fillWithPattern(image);
     DataContainer container(image);
     m_operator->setInputData(OpenGlProjector::IMAGE, container);
-    m_operator->setInputData(OpenGlProjector::IMAGE, DataContainer());
+    m_operator->getOutputData(OpenGlProjector::TRIGGER);
 }
 
 void OpenGlProjectorTest::testExecutePixel()
@@ -138,7 +138,7 @@ void OpenGlProjectorTest::testExecutePixel()
     fillWithPattern(image);
     DataContainer container(image);
     m_operator->setInputData(OpenGlProjector::IMAGE, container);
-    m_operator->setInputData(OpenGlProjector::IMAGE, DataContainer());
+    m_operator->getOutputData(OpenGlProjector::TRIGGER);
 }
 
 void OpenGlProjectorTest::testExecuteTwice()
@@ -146,15 +146,17 @@ void OpenGlProjectorTest::testExecuteTwice()
     m_operator->activate();
     std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_MS)); 
     
-    cvsupport::Image* image1 = new cvsupport::Image(IMAGE_SIZE, IMAGE_SIZE, 
+    cvsupport::Image* image1 = new cvsupport::Image(IMAGE_SIZE, 1, 
                                                     runtime::Image::RGB_24);
-    cvsupport::Image* image2 = new cvsupport::Image(IMAGE_SIZE, IMAGE_SIZE, 
+    cvsupport::Image* image2 = new cvsupport::Image(1, IMAGE_SIZE, 
                                                     runtime::Image::RGB_24);
     fillWithPattern(image1);
     fillWithPattern(image2);
     m_operator->setInputData(OpenGlProjector::IMAGE, DataContainer(image1));
+    m_operator->getOutputData(OpenGlProjector::TRIGGER);
+    m_operator->clearOutputData(OpenGlProjector::TRIGGER);
     m_operator->setInputData(OpenGlProjector::IMAGE, DataContainer(image2));
-    m_operator->setInputData(OpenGlProjector::IMAGE, DataContainer());
+    m_operator->getOutputData(OpenGlProjector::TRIGGER);
 }
 
 void OpenGlProjectorTest::tearDown ( void )
