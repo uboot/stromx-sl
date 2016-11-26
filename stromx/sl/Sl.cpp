@@ -8,6 +8,7 @@
 #include "stromx/sl/Decode.h"
 #include "stromx/sl/Encode.h"
 #include "stromx/sl/OpenGlProjector.h"
+#include "stromx/sl/RbfInterpolate.h"
 
 namespace stromx
 {
@@ -28,6 +29,7 @@ int stromxRegisterSl(stromx::runtime::Registry* registry)
         registry->registerOperator(new Decode);  
         registry->registerOperator(new Encode);  
         registry->registerOperator(new OpenGlProjector);
+        registry->registerOperator(new RbfInterpolate);
     }
     catch(stromx::runtime::Exception & e)
     {

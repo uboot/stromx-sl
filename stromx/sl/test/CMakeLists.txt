@@ -47,11 +47,13 @@ set (SOURCES
     ../Decode.cpp
     ../Encode.cpp
     ../OpenGlProjector.cpp
+    ../RbfInterpolate.cpp
     ../Sl.cpp
     DecodeTest.cpp
     EncodeTest.cpp
     main.cpp
     OpenGlProjectorTest.cpp
+    RbfInterpolateTest.cpp
 )
 
 add_executable(stromx_sl_test ${SOURCES})

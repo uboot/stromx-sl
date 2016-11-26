@@ -181,7 +181,7 @@ const std::vector<const runtime::Output*> Decode::setupOutputs()
     shading->setOperatorThread(OUTPUT_THREAD);
     outputs.push_back(shading);
     
-    Output* mask = new Output(MASK, runtime::Variant::MONO_16_IMAGE);
+    Output* mask = new Output(MASK, runtime::Variant::MONO_8_IMAGE);
     mask->setTitle(L_("Mask"));
     mask->setOperatorThread(OUTPUT_THREAD);
     outputs.push_back(mask);
@@ -207,6 +207,7 @@ const std::vector<const runtime::Parameter*> Decode::setupParameters()
     codecType->add(EnumDescription(Enum(codecTypePhaseShiftModulated), L_("Phase shift modulated")));
     codecType->add(EnumDescription(Enum(codecTypePhaseShiftMicro), L_("Phase shift micro")));
     codecType->add(EnumDescription(Enum(codecTypePhaseShiftNStep), L_("Phase shift N step")));
+    codecType->add(EnumDescription(Enum(codecTypeCalibration), L_("Calibration")));
     parameters.push_back(codecType);
     
     NumericParameter<UInt32>* width = new NumericParameter<UInt32>(WIDTH);

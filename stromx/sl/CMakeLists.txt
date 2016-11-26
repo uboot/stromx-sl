@@ -15,6 +15,7 @@ set (SOURCES
     Decode.cpp
     Encode.cpp
     OpenGlProjector.cpp
+    RbfInterpolate.cpp
     Sl.cpp
 )
 

@@ -158,6 +158,7 @@ const std::vector<const runtime::Parameter*> Encode::setupParameters()
     codecType->add(EnumDescription(Enum(codecTypePhaseShiftModulated), L_("Phase shift modulated")));
     codecType->add(EnumDescription(Enum(codecTypePhaseShiftMicro), L_("Phase shift micro")));
     codecType->add(EnumDescription(Enum(codecTypePhaseShiftNStep), L_("Phase shift N step")));
+    codecType->add(EnumDescription(Enum(codecTypeCalibration), L_("Calibration")));
     parameters.push_back(codecType);
     
     NumericParameter<UInt32>* width = new NumericParameter<UInt32>(WIDTH);
