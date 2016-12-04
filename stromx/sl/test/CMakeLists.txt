@@ -1,6 +1,11 @@
 add_test(NAME stromx_sl_test COMMAND stromx_sl_test)
 set_tests_properties(stromx_sl_test PROPERTIES ENVIRONMENT "${TEST_ENVIRONMENT}")
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/mask_200x100.png ${CMAKE_CURRENT_BINARY_DIR}/mask_200x100.png COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/grid_200x100_x.npy ${CMAKE_CURRENT_BINARY_DIR}/grid_200x100_x.npy COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/grid_200x100_y.npy ${CMAKE_CURRENT_BINARY_DIR}/grid_200x100_y.npy COPYONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/coordinates.npy ${CMAKE_CURRENT_BINARY_DIR}/coordinates.npy COPYONLY)
+
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gray_code_0.png ${CMAKE_CURRENT_BINARY_DIR}/gray_code_0.png COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gray_code_1.png ${CMAKE_CURRENT_BINARY_DIR}/gray_code_1.png COPYONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/gray_code_2.png ${CMAKE_CURRENT_BINARY_DIR}/gray_code_2.png COPYONLY)

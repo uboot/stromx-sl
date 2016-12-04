@@ -35,6 +35,7 @@ public:
     {
         INPUT_DATA,
         INPUT_POINTS,
+        MASK,
         DATA_AT_POINTS
     };
     

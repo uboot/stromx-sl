@@ -24,6 +24,7 @@
 #include <stromx/runtime/OperatorTester.h>
 #include <stromx/runtime/ReadAccess.h>
 #include <stromx/cvsupport/Image.h>
+#include <stromx/cvsupport/Matrix.h>
 
 #include "stromx/sl/RbfInterpolate.h"
 
@@ -64,6 +65,17 @@ void RbfInterpolateTest::setUp ( void )
 
 void RbfInterpolateTest::testExecute()
 {
+    m_operator->activate();
+    
+    DataContainer inputData(new cvsupport::Matrix("grid_200x100_x.npy"));
+    DataContainer inputPoints(new cvsupport::Matrix("coordinates.npy"));
+    DataContainer mask(new cvsupport::Image("mask_200x100.png"));
+    
+    m_operator->setInputData(RbfInterpolate::INPUT_DATA, inputData);
+    m_operator->setInputData(RbfInterpolate::INPUT_POINTS, inputPoints);
+    m_operator->setInputData(RbfInterpolate::MASK, mask);
+    
+    DataContainer result = m_operator->getOutputData(RbfInterpolate::DATA_AT_POINTS);
 }
 
 void RbfInterpolateTest::tearDown ( void )

@@ -106,6 +106,10 @@ const std::vector<const runtime::Input*> RbfInterpolate::setupInputs()
     inputPoints->setTitle(L_("Input points"));
     inputPoints->setCols(2);
     inputs.push_back(inputPoints);
+    
+    Input* mask = new Input(MASK, runtime::Variant::MONO_8_IMAGE);
+    mask->setTitle(L_("Mask"));
+    inputs.push_back(mask);
 
     return inputs;
 }
