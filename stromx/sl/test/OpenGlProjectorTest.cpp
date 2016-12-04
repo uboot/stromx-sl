@@ -19,6 +19,7 @@
 #include <cppunit/TestFixture.h>
 
 #include <stromx/runtime/DataContainer.h>
+#include <stromx/runtime/OperatorException.h>
 #include <stromx/runtime/OperatorTester.h>
 #include <stromx/cvsupport/Image.h>
 
@@ -42,6 +43,7 @@ class OpenGlProjectorTest : public CPPUNIT_NS :: TestFixture
     CPPUNIT_TEST (testExecuteColumn);
     CPPUNIT_TEST (testExecutePixel);
     CPPUNIT_TEST (testExecuteTwice);
+    CPPUNIT_TEST (testActivateSecondScreen);
     CPPUNIT_TEST_SUITE_END ();
 
     public:
@@ -56,6 +58,7 @@ class OpenGlProjectorTest : public CPPUNIT_NS :: TestFixture
         void testExecuteColumn();
         void testExecutePixel();
         void testExecuteTwice();
+        void testActivateSecondScreen();
         
     private:
         const static int SLEEP_MS;
@@ -157,6 +160,12 @@ void OpenGlProjectorTest::testExecuteTwice()
     m_operator->clearOutputData(OpenGlProjector::TRIGGER);
     m_operator->setInputData(OpenGlProjector::IMAGE, DataContainer(image2));
     m_operator->getOutputData(OpenGlProjector::TRIGGER);
+}
+
+void OpenGlProjectorTest::testActivateSecondScreen()
+{
+    m_operator->setParameter(OpenGlProjector::SCREEN, runtime::UInt32(1));
+    CPPUNIT_ASSERT_THROW(m_operator->activate(), runtime::OperatorError);
 }
 
 void OpenGlProjectorTest::tearDown ( void )

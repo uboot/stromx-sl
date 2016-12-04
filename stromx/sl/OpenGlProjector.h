@@ -33,7 +33,8 @@ public:
     enum DataId
     {
         IMAGE,
-        TRIGGER
+        TRIGGER,
+        SCREEN
     };
     
     OpenGlProjector();
@@ -56,6 +57,7 @@ private:
     static const std::vector<const runtime::Parameter*> setupParameters();
     
     Projector* m_projector;
+    runtime::UInt32 m_screen;
 }; 
       
 }

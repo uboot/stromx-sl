@@ -59,17 +59,22 @@ const runtime::DataRef OpenGlProjector::getParameter(const unsigned int id) cons
 {
     switch(id)
     {
+    case SCREEN:
+        return m_screen;
     default:
         throw WrongParameterId(id, *this);
     }
 }
 
-void OpenGlProjector::setParameter(const unsigned int id, const runtime::Data& /*value*/)
+void OpenGlProjector::setParameter(const unsigned int id, const runtime::Data& value)
 {
     try
     {
         switch(id)
         {
+        case SCREEN:
+            m_screen = data_cast<UInt32>(value);
+            break;
         default:
             throw WrongParameterId(id, *this);
         }
@@ -82,7 +87,14 @@ void OpenGlProjector::setParameter(const unsigned int id, const runtime::Data& /
 
 void OpenGlProjector::activate()
 {
-    m_projector = Projector::NewProjector(projectorTypeOpenGL, 0);
+    try
+    {
+        m_projector = Projector::NewProjector(projectorTypeOpenGL, m_screen);
+    }
+    catch(const char* e)
+    {
+        throw OperatorError(*this, e);
+    }
 }
 
 void OpenGlProjector::deactivate()
@@ -129,7 +141,12 @@ const std::vector<const runtime::Output*> OpenGlProjector::setupOutputs()
 const std::vector<const runtime::Parameter*> OpenGlProjector::setupParameters()
 {
     std::vector<const Parameter*> parameters;
-                                
+    
+    NumericParameter<UInt32>* screen = new NumericParameter<UInt32>(SCREEN);
+    screen->setTitle(L_("Screen"));
+    screen->setAccessMode(Parameter::INITIALIZED_WRITE);
+    parameters.push_back(screen);
+    
     return parameters;
 }
 
