@@ -96,6 +96,16 @@ void RbfInterpolate::execute(runtime::DataProvider& provider)
 const std::vector<const runtime::Input*> RbfInterpolate::setupInputs()
 {
     std::vector<const Input*> inputs;
+    
+    Input* inputData = new Input(INPUT_DATA, runtime::Variant::FLOAT_MATRIX);
+    inputData->setTitle(L_("Input data"));
+    inputData->setVisualization(Variant::IMAGE);
+    inputs.push_back(inputData);
+    
+    Input* inputPoints = new Input(INPUT_POINTS, runtime::Variant::FLOAT_MATRIX);
+    inputPoints->setTitle(L_("Input points"));
+    inputPoints->setCols(2);
+    inputs.push_back(inputPoints);
 
     return inputs;
 }
@@ -104,6 +114,10 @@ const std::vector<const runtime::Output*> RbfInterpolate::setupOutputs()
 {
     std::vector<const runtime::Output*> outputs;
     
+    Output* dataAtPoints = new Output(DATA_AT_POINTS, runtime::Variant::FLOAT_MATRIX);
+    dataAtPoints->setTitle(L_("Interpolated data"));
+    dataAtPoints->setCols(1);
+    outputs.push_back(dataAtPoints);
     
     return outputs;
 }

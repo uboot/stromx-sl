@@ -33,6 +33,9 @@ class STROMX_SL_API RbfInterpolate : public runtime::OperatorKernel
 public:      
     enum DataId
     {
+        INPUT_DATA,
+        INPUT_POINTS,
+        DATA_AT_POINTS
     };
     
     RbfInterpolate();
