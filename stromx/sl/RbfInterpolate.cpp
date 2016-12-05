@@ -90,7 +90,23 @@ void RbfInterpolate::deactivate()
 
 void RbfInterpolate::execute(runtime::DataProvider& provider)
 {
-
+    Id2DataPair inputData(INPUT_DATA);
+    Id2DataPair inputPoints(INPUT_POINTS);
+    Id2DataPair mask(MASK);
+    
+    provider.receiveInputData(inputData && inputPoints && mask);
+    
+    ReadAccess inputDataAccess(inputData.data());
+    ReadAccess inputPointsAccess(inputPoints.data());
+    ReadAccess maskAccess(mask.data());
+    
+    const Matrix & points = inputPointsAccess.get<Matrix>();
+    
+    if (! points.isVariant(Variant::FLOAT_MATRIX))
+        throw InputError(INPUT_POINTS, *this, "Point matrix must have floating point values.");
+    
+    if (points.cols() != 2)
+        throw InputError(INPUT_POINTS, *this, "Point matrix must have two columns.");
 }
 
 const std::vector<const runtime::Input*> RbfInterpolate::setupInputs()
