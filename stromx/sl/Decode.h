@@ -19,6 +19,7 @@
 
 #include <stromx/runtime/OperatorKernel.h>
 
+#include "stromx/sl/DecodeBase.h"
 #include "stromx/sl/Sl.h"
 
 class Decoder;
@@ -28,52 +29,15 @@ namespace stromx
 namespace sl
 {
 
-class STROMX_SL_API Decode : public runtime::OperatorKernel
+class STROMX_SL_API Decode : public DecodeBase
 {   
-public:      
-    enum DataId
-    {
-        CODEC_TYPE,
-        WIDTH,
-        HEIGHT,
-        DIRECTION,
-        PATTERN,
-        HORIZONTAL,
-        VERTICAL,
-        SHADING,
-        MASK
-    };
-    
-    enum OperatorThread
-    {
-        INPUT_THREAD,
-        OUTPUT_THREAD
-    };
-    
+public:    
     Decode();
     
     virtual OperatorKernel* clone() const { return new Decode; }
-    virtual const runtime::DataRef getParameter(const unsigned int id) const;
-    virtual void setParameter(const unsigned int id, const runtime::Data& value);
-    virtual void activate();
-    virtual void deactivate();
-    virtual void execute(runtime::DataProvider& provider);
     
 private:
     static const std::string TYPE;
-    static const std::string PACKAGE;
-    static const runtime::Version VERSION; 
-    
-    static const std::vector<const runtime::Input*> setupInputs();
-    static const std::vector<const runtime::Output*> setupOutputs();
-    static const std::vector<const runtime::Parameter*> setupParameters();
-    
-    Decoder* m_decoder;
-    runtime::Enum m_codecType;
-    runtime::Enum m_direction;
-    runtime::UInt32 m_width;
-    runtime::UInt32 m_height;
-    unsigned int m_currentPattern;
 }; 
       
 }

@@ -13,7 +13,9 @@ include_directories (
 
 set (SOURCES 
     Decode.cpp
+    DecodeBase.cpp
     Encode.cpp
+    EncodeBase.cpp
     OpenGlProjector.cpp
     RbfInterpolate.cpp
     Sl.cpp
