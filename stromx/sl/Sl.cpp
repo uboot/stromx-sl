@@ -5,8 +5,10 @@
 #include <stromx/runtime/Locale.h>
 #include <stromx/runtime/Registry.h>
 
+#include "stromx/sl/Calibrate.h"
 #include "stromx/sl/Decode.h"
 #include "stromx/sl/Encode.h"
+#include "stromx/sl/EncodeCalibrator.h"
 #include "stromx/sl/OpenGlProjector.h"
 #include "stromx/sl/RbfInterpolate.h"
 
@@ -26,8 +28,10 @@ int stromxRegisterSl(stromx::runtime::Registry* registry)
     
     try
     {
+        registry->registerOperator(new Calibrate);  
         registry->registerOperator(new Decode);  
         registry->registerOperator(new Encode);  
+        registry->registerOperator(new EncodeCalibrator);  
         registry->registerOperator(new OpenGlProjector);
         registry->registerOperator(new RbfInterpolate);
     }

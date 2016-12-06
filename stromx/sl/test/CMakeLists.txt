@@ -49,10 +49,12 @@ include_directories (
 )
 
 set (SOURCES 
+    ../Calibrate.cpp
     ../Decode.cpp
     ../DecodeBase.cpp
     ../Encode.cpp
     ../EncodeBase.cpp
+    ../EncodeCalibrator.cpp
     ../OpenGlProjector.cpp
     ../RbfInterpolate.cpp
     ../Sl.cpp

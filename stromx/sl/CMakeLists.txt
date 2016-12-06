@@ -11,10 +11,12 @@ include_directories (
     ${CMAKE_BINARY_DIR}
 )
 
-set (SOURCES 
+set (SOURCES
+    Calibrate.cpp
     Decode.cpp
     DecodeBase.cpp
     Encode.cpp
+    EncodeCalibrator.cpp
     EncodeBase.cpp
     OpenGlProjector.cpp
     RbfInterpolate.cpp
