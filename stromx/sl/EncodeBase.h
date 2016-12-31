@@ -33,11 +33,10 @@ class EncodeBase : public runtime::OperatorKernel
 public:      
     enum DataId
     {
-        CODEC_TYPE,
+        PATTERN,
         WIDTH,
         HEIGHT,
-        DIRECTION,
-        PATTERN
+        NUM_DATA_IDS
     };
     
     EncodeBase(const std::string & type);
@@ -48,17 +47,22 @@ public:
     virtual void deactivate();
     virtual void execute(runtime::DataProvider& provider);
     
+protected:
+    virtual const std::vector<const runtime::Parameter*> setupParameters();
+    virtual Encoder* createEncoder() = 0;
+    virtual void initialize();
+    
+    unsigned int width() const { return m_width; }
+    unsigned int height() const { return m_height; }
+    
 private:
     static const std::string PACKAGE;
     static const runtime::Version VERSION; 
     
     static const std::vector<const runtime::Input*> setupInputs();
     static const std::vector<const runtime::Output*> setupOutputs();
-    static const std::vector<const runtime::Parameter*> setupParameters();
     
     Encoder* m_encoder;
-    runtime::Enum m_codecType;
-    runtime::Enum m_direction;
     runtime::UInt32 m_width;
     runtime::UInt32 m_height;
     unsigned int m_currentPattern;

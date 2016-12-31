@@ -24,9 +24,8 @@
 #include <stromx/runtime/OperatorTester.h>
 #include <stromx/runtime/ReadAccess.h>
 #include <stromx/cvsupport/Image.h>
-#include <stromx/cvsupport/Matrix.h>
 
-#include "stromx/sl/RbfInterpolate.h"
+#include "stromx/sl/EncodeCalibrator.h"
 
 using namespace stromx::runtime;
 
@@ -36,14 +35,14 @@ namespace sl
 {
 
 
-class RbfInterpolateTest : public CPPUNIT_NS :: TestFixture
+class EncodeCalibratorTest : public CPPUNIT_NS :: TestFixture
 {
-    CPPUNIT_TEST_SUITE (RbfInterpolateTest);
+    CPPUNIT_TEST_SUITE (EncodeCalibratorTest);
     CPPUNIT_TEST (testExecute);
     CPPUNIT_TEST_SUITE_END ();
 
     public:
-        RbfInterpolateTest() : m_operator(0) {}
+        EncodeCalibratorTest() : m_operator(0) {}
         
         void setUp();
         void tearDown();
@@ -55,30 +54,29 @@ class RbfInterpolateTest : public CPPUNIT_NS :: TestFixture
         OperatorTester* m_operator;
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION (RbfInterpolateTest);
+CPPUNIT_TEST_SUITE_REGISTRATION (EncodeCalibratorTest);
 
-void RbfInterpolateTest::setUp ( void )
+void EncodeCalibratorTest::setUp ( void )
 {
-    m_operator = new OperatorTester(new RbfInterpolate());
+    m_operator = new OperatorTester(new EncodeCalibrator());
     m_operator->initialize();
 }
 
-void RbfInterpolateTest::testExecute()
+void EncodeCalibratorTest::testExecute()
 {
     m_operator->activate();
     
-    DataContainer inputData(new cvsupport::Matrix("grid_200x100_x.npy"));
-    DataContainer inputPoints(new cvsupport::Matrix("coordinates.npy"));
-    DataContainer mask(new cvsupport::Image("mask_200x100.png"));
-    
-    m_operator->setInputData(RbfInterpolate::INPUT_DATA, inputData);
-    m_operator->setInputData(RbfInterpolate::INPUT_POINTS, inputPoints);
-    m_operator->setInputData(RbfInterpolate::MASK, mask);
-    
-    //DataContainer result = m_operator->getOutputData(RbfInterpolate::DATA_AT_POINTS);
+    for (int i = 0; i < 12; ++i)
+    {
+        DataContainer pattern = m_operator->getOutputData(EncodeCalibrator::PATTERN);
+        const Image & image = ReadAccess(pattern).get<Image>();
+        std::string filename = "EncodeCalibratorTest_testExecute_" + std::to_string(i) + ".png";
+        cvsupport::Image::save(filename, image);
+        m_operator->clearOutputData(EncodeCalibrator::PATTERN);
+    }
 }
 
-void RbfInterpolateTest::tearDown ( void )
+void EncodeCalibratorTest::tearDown ( void )
 {
     delete m_operator;
 }

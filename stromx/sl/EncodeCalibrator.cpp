@@ -29,7 +29,7 @@
 
 #include <stromx/cvsupport/Image.h>
 
-#include <codec/Codec.h>
+#include <codec/CodecCalibration.h>
 
 #include "stromx/sl/Locale.h"
 
@@ -45,6 +45,11 @@ const std::string EncodeCalibrator::TYPE("EncodeCalibrator");
 EncodeCalibrator::EncodeCalibrator()
     : EncodeBase(TYPE)
 {
+}
+
+Encoder* EncodeCalibrator::createEncoder()
+{
+    return new EncoderCalibration(width(), height(), CodecDirBoth);
 }
 
 } 

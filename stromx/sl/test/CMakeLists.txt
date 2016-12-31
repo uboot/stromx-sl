@@ -60,6 +60,7 @@ set (SOURCES
     ../Sl.cpp
     DecodeTest.cpp
     EncodeTest.cpp
+    EncodeCalibratorTest.cpp
     main.cpp
     OpenGlProjectorTest.cpp
     RbfInterpolateTest.cpp

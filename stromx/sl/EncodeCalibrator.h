@@ -36,6 +36,9 @@ public:
     
     virtual OperatorKernel* clone() const { return new EncodeCalibrator; }
     
+protected:
+    virtual Encoder* createEncoder();
+    
 private:
     static const std::string TYPE;
 }; 

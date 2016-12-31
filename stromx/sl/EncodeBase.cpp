@@ -44,10 +44,8 @@ const std::string EncodeBase::PACKAGE(STROMX_SL_PACKAGE_NAME);
 const runtime::Version EncodeBase::VERSION(0, 1, 0);
     
 EncodeBase::EncodeBase(const std::string & type)
-    : OperatorKernel(type, PACKAGE, VERSION, setupInputs(), setupOutputs(), setupParameters())
+    : OperatorKernel(type, PACKAGE, VERSION)
     , m_encoder(0)
-    , m_codecType(codecTypeGrayCode)
-    , m_direction(CodecDirBoth)
     , m_currentPattern(0)
 {
 }
@@ -56,14 +54,10 @@ const runtime::DataRef EncodeBase::getParameter(const unsigned int id) const
 {
     switch(id)
     {
-    case CODEC_TYPE:
-        return m_codecType;
     case WIDTH:
         return m_width;
     case HEIGHT:
         return m_height;
-    case DIRECTION:
-        return m_direction;
     default:
         throw WrongParameterId(id, *this);
     }
@@ -75,12 +69,6 @@ void EncodeBase::setParameter(const unsigned int id, const runtime::Data& value)
     {
         switch(id)
         {
-        case CODEC_TYPE:
-            m_codecType = data_cast<Enum>(value);
-            break;
-        case DIRECTION:
-            m_direction = data_cast<Enum>(value);
-            break;
         case WIDTH:
             m_width = data_cast<UInt32>(value);
             break;
@@ -97,10 +85,14 @@ void EncodeBase::setParameter(const unsigned int id, const runtime::Data& value)
     }
 }
 
+void EncodeBase::initialize()
+{
+    OperatorKernel::initialize(setupInputs(), setupOutputs(), setupParameters());
+}
+
 void EncodeBase::activate()
 {
-    m_encoder = Encoder::NewEncoder(CodecType(int(m_codecType)), m_width,
-                                    m_height, CodecDir(int(m_direction)));
+    m_encoder = createEncoder();
     m_currentPattern = 0;
 }
 
@@ -142,22 +134,6 @@ const std::vector<const runtime::Parameter*> EncodeBase::setupParameters()
 {
     std::vector<const Parameter*> parameters;
     
-    EnumParameter* codecType = new EnumParameter(CODEC_TYPE);
-    codecType->setTitle(L_("Codec"));
-    codecType->setAccessMode(Parameter::INITIALIZED_WRITE);
-    codecType->add(EnumDescription(Enum(codecTypePhaseShift2x3), L_("Phase shift 2x3")));
-    codecType->add(EnumDescription(Enum(codecTypePhaseShift3), L_("Phase shift 3")));
-    codecType->add(EnumDescription(Enum(codecTypePhaseShift3FastWrap), L_("Phase shift 3 fast wrap")));
-    codecType->add(EnumDescription(Enum(codecTypePhaseShift3Unwrap), L_("Phase shift 3 unwrap")));
-    codecType->add(EnumDescription(Enum(codecTypePhaseShift4), L_("Phase shift 4")));
-    codecType->add(EnumDescription(Enum(codecTypeGrayCode), L_("Gray code")));
-    codecType->add(EnumDescription(Enum(codecTypePhaseShift2p1), L_("Phase shift 2p1")));
-    codecType->add(EnumDescription(Enum(codecTypeFastRatio), L_("Fast ratio")));
-    codecType->add(EnumDescription(Enum(codecTypePhaseShiftModulated), L_("Phase shift modulated")));
-    codecType->add(EnumDescription(Enum(codecTypePhaseShiftMicro), L_("Phase shift micro")));
-    codecType->add(EnumDescription(Enum(codecTypePhaseShiftNStep), L_("Phase shift N step")));
-    parameters.push_back(codecType);
-    
     NumericParameter<UInt32>* width = new NumericParameter<UInt32>(WIDTH);
     width->setTitle(L_("Width"));
     width->setAccessMode(Parameter::INITIALIZED_WRITE);
@@ -167,14 +143,6 @@ const std::vector<const runtime::Parameter*> EncodeBase::setupParameters()
     height->setTitle(L_("Height"));
     height->setAccessMode(Parameter::INITIALIZED_WRITE);
     parameters.push_back(height);
-    
-    EnumParameter* direction = new EnumParameter(DIRECTION);
-    direction->setTitle(L_("Direction"));
-    direction->setAccessMode(Parameter::INITIALIZED_WRITE);
-    direction->add(EnumDescription(Enum(CodecDirHorizontal), L_("Horizontal")));
-    direction->add(EnumDescription(Enum(CodecDirVertical), L_("Vertical")));
-    direction->add(EnumDescription(Enum(CodecDirBoth), L_("Both directions")));
-    parameters.push_back(direction);
                                 
     return parameters;
 }

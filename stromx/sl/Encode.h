@@ -31,13 +31,29 @@ namespace sl
 
 class STROMX_SL_API Encode : public EncodeBase
 {   
-public:
+public:   
+    enum DataId
+    {
+        CODEC_TYPE = NUM_DATA_IDS,
+        DIRECTION
+    };
+    
     Encode();
+    
+    virtual const runtime::DataRef getParameter(const unsigned int id) const;
+    virtual void setParameter(const unsigned int id, const runtime::Data& value);
     
     virtual OperatorKernel* clone() const { return new Encode; }
     
+protected:
+    virtual const std::vector<const runtime::Parameter*> setupParameters();
+    virtual Encoder* createEncoder();
+    
 private:
     static const std::string TYPE;
+    
+    runtime::Enum m_codecType;
+    runtime::Enum m_direction;
 }; 
       
 }
