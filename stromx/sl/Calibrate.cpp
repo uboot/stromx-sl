@@ -16,6 +16,8 @@
 
 #include "stromx/sl/Calibrate.h"
 
+#include <algorithm>
+
 #include <stromx/runtime/DataProvider.h>
 #include <stromx/runtime/EnumParameter.h>
 #include <stromx/runtime/Id2DataPair.h>
@@ -32,7 +34,7 @@
 #include <stromx/cvsupport/Matrix.h>
 #include <stromx/cvsupport/Utilities.h>
 
-#include <codec/Codec.h>
+#include <calibrator/CalibratorRBF.h>
 
 #include "stromx/sl/Locale.h"
 
@@ -47,11 +49,54 @@ const std::string Calibrate::TYPE("Calibrate");
     
 Calibrate::Calibrate()
     : DecodeBase(TYPE)
+    , m_calibrator(0)
 {
+}
+
+void Calibrate::activate()
+{
+    m_calibrator = new CalibratorRBF(width(), height());
+    
+    m_patternSequence.clear();
+    m_patternSequences.clear();
+}
+
+void Calibrate::deactivate()
+{
+    m_patternSequence.clear();
+    m_patternSequences.clear();
+    
+    delete m_calibrator;
 }
 
 void Calibrate::execute(runtime::DataProvider& provider)
 {
+    Id2DataPair inputMapper(PATTERN);
+    provider.receiveInputData(inputMapper);
+    ReadAccess access(inputMapper.data());
+    m_patternSequence.push_back(access);
+    
+    if (m_patternSequence.size() == m_calibrator->getNPatterns())
+    {
+        m_patternSequences.push_back(m_patternSequence);
+        m_patternSequence.clear();
+
+    
+        for (auto iter = m_patternSequences.begin(); 
+             iter != m_patternSequences.end(); ++iter)
+        {
+            std::vector<cv::Mat> frameSequence;
+            for (auto iter = m_patternSequence.begin();
+                iter != m_patternSequence.end(); ++iter)
+            {
+                const Image & image = iter->get<Image>();
+                cv::Mat cvImage = cvsupport::getOpenCvMat(image);
+                frameSequence.push_back(cvImage);
+                m_calibrator->addFrameSequence(frameSequence);
+            }
+        }
+    }
+
 }
 
 const std::vector<const runtime::Output*> Calibrate::setupOutputs()

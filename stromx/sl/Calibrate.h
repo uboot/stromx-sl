@@ -18,11 +18,12 @@
 #define STROMX_SL_CALIBRATE_H
 
 #include <stromx/runtime/OperatorKernel.h>
+#include <stromx/runtime/ReadAccess.h>
 
 #include "stromx/sl/DecodeBase.h"
 #include "stromx/sl/Sl.h"
 
-class Decoder;
+class Calibrator;
 
 namespace stromx
 {
@@ -51,6 +52,8 @@ public:
     virtual OperatorKernel* clone() const { return new Calibrate; }
     
     virtual void execute(runtime::DataProvider& provider);
+    virtual void activate();
+    virtual void deactivate();
     
 protected:
     virtual const std::vector<const runtime::Output*> setupOutputs();
@@ -58,6 +61,11 @@ protected:
     
 private:
     static const std::string TYPE;
+    
+    Calibrator* m_calibrator;
+    unsigned int m_currentPattern;
+    std::vector<runtime::ReadAccess> m_patternSequence;
+    std::vector< std::vector<runtime::ReadAccess> > m_patternSequences;
 }; 
       
 }

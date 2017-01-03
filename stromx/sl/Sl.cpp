@@ -33,7 +33,6 @@ int stromxRegisterSl(stromx::runtime::Registry* registry)
         registry->registerOperator(new Encode);  
         registry->registerOperator(new EncodeCalibrator);  
         registry->registerOperator(new OpenGlProjector);
-        registry->registerOperator(new RbfInterpolate);
     }
     catch(stromx::runtime::Exception & e)
     {

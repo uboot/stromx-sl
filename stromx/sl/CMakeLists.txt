@@ -5,6 +5,7 @@ configure_file (
 
 include_directories (
     ${CMAKE_SOURCE_DIR}/slstudio/src
+    ${CMAKE_SOURCE_DIR}/slstudio/src/codec
     ${CMAKE_BINARY_DIR}/slstudio/src
     ${CMAKE_BINARY_DIR}/slstudio/src/projector
     ${CMAKE_SOURCE_DIR}
