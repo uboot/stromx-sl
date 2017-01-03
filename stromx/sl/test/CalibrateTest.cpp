@@ -1,5 +1,5 @@
 /* 
-*  Copyright 2016 Matthias Fuchs
+*  Copyright 2017 Matthias Fuchs
 *
 *  Licensed under the Apache License, Version 2.0 (the "License");
 *  you may not use this file except in compliance with the License.
@@ -24,8 +24,9 @@
 #include <stromx/runtime/OperatorTester.h>
 #include <stromx/runtime/ReadAccess.h>
 #include <stromx/cvsupport/Image.h>
+#include <stromx/cvsupport/Matrix.h>
 
-#include "stromx/sl/EncodeCalibrator.h"
+#include "stromx/sl/Calibrate.h"
 
 using namespace stromx::runtime;
 
@@ -35,14 +36,14 @@ namespace sl
 {
 
 
-class EncodeCalibratorTest : public CPPUNIT_NS :: TestFixture
+class CalibrateTest : public CPPUNIT_NS :: TestFixture
 {
-    CPPUNIT_TEST_SUITE (EncodeCalibratorTest);
+    CPPUNIT_TEST_SUITE (CalibrateTest);
     CPPUNIT_TEST (testExecute);
     CPPUNIT_TEST_SUITE_END ();
 
     public:
-        EncodeCalibratorTest() : m_operator(0) {}
+        CalibrateTest() : m_operator(0) {}
         
         void setUp();
         void tearDown();
@@ -54,35 +55,34 @@ class EncodeCalibratorTest : public CPPUNIT_NS :: TestFixture
         OperatorTester* m_operator;
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION (EncodeCalibratorTest);
+CPPUNIT_TEST_SUITE_REGISTRATION (CalibrateTest);
 
-void EncodeCalibratorTest::setUp ( void )
+void CalibrateTest::setUp ( void )
 {
-    m_operator = new OperatorTester(new EncodeCalibrator());
+    m_operator = new OperatorTester(new Calibrate());
     m_operator->initialize();
 }
 
-void EncodeCalibratorTest::testExecute()
+void CalibrateTest::testExecute()
 {
-    m_operator->setParameter(EncodeCalibrator::WIDTH, UInt32(100));
-    m_operator->setParameter(EncodeCalibrator::HEIGHT, UInt32(50));
+    m_operator->setParameter(Calibrate::WIDTH, UInt32(100));
+    m_operator->setParameter(Calibrate::HEIGHT, UInt32(50));
     m_operator->activate();
     
     for (int i = 0; i < 12; ++i)
     {
-        DataContainer pattern = m_operator->getOutputData(EncodeCalibrator::PATTERN);
-        const Image & image = ReadAccess(pattern).get<Image>();
-        std::string filename = "EncodeCalibratorTest_testExecute_" + std::to_string(i) + ".png";
-        cvsupport::Image::save(filename, image);
-        m_operator->clearOutputData(EncodeCalibrator::PATTERN);
+        std::string fileName = "phase_shift_2x3_" + std::to_string(i) + ".png";
+        DataContainer image(new cvsupport::Image(fileName));
+        m_operator->setInputData(Calibrate::PATTERN, image);
     }
 }
 
-void EncodeCalibratorTest::tearDown ( void )
+void CalibrateTest::tearDown ( void )
 {
     delete m_operator;
 }
 
 }
 }
+
 

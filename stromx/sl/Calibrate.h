@@ -31,10 +31,30 @@ namespace sl
 
 class STROMX_SL_API Calibrate : public DecodeBase
 {   
-public:    
+public:
+    enum DataId
+    {
+        CALIBRATOR_TYPE = NUM_DATA_IDS,
+        PARAMETER_PATTERN_SIZE_X,
+        PARAMETER_PATTERN_SIZE_Y,
+        PARAMETER_SQUARE_SIZE,
+        CAMERA_MATRIX,
+        CAMERA_DIST_COEFFS,
+        PROJECTOR_MATRIX,
+        PROJECTOR_DIST_COEFFS,
+        RVEC,
+        TVEC
+    };
+    
     Calibrate();
     
     virtual OperatorKernel* clone() const { return new Calibrate; }
+    
+    virtual void execute(runtime::DataProvider& provider);
+    
+protected:
+    virtual const std::vector<const runtime::Output*> setupOutputs();
+    virtual const std::vector<const runtime::Parameter*> setupParameters();
     
 private:
     static const std::string TYPE;

@@ -58,6 +58,7 @@ set (SOURCES
     ../OpenGlProjector.cpp
     ../RbfInterpolate.cpp
     ../Sl.cpp
+    CalibrateTest.cpp
     DecodeTest.cpp
     EncodeTest.cpp
     EncodeCalibratorTest.cpp

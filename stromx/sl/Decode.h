@@ -32,12 +32,37 @@ namespace sl
 class STROMX_SL_API Decode : public DecodeBase
 {   
 public:    
+    enum DataId
+    {
+        CODEC_TYPE = NUM_DATA_IDS,
+        DIRECTION,
+        HORIZONTAL,
+        VERTICAL,
+        SHADING,
+        MASK
+    };
+    
     Decode();
     
     virtual OperatorKernel* clone() const { return new Decode; }
     
+    virtual const runtime::DataRef getParameter(const unsigned int id) const;
+    virtual void setParameter(const unsigned int id, const runtime::Data& value);
+    virtual void execute(runtime::DataProvider& provider);
+    virtual void activate();
+    virtual void deactivate();
+    
+protected:
+    virtual const std::vector<const runtime::Output*> setupOutputs();
+    virtual const std::vector<const runtime::Parameter*> setupParameters();
+    
 private:
     static const std::string TYPE;
+    
+    runtime::Enum m_codecType;
+    runtime::Enum m_direction;
+    Decoder* m_decoder;
+    unsigned int m_currentPattern;
 }; 
       
 }

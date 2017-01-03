@@ -33,15 +33,10 @@ class DecodeBase : public runtime::OperatorKernel
 public:      
     enum DataId
     {
-        CODEC_TYPE,
         WIDTH,
         HEIGHT,
-        DIRECTION,
         PATTERN,
-        HORIZONTAL,
-        VERTICAL,
-        SHADING,
-        MASK
+        NUM_DATA_IDS
     };
     
     enum OperatorThread
@@ -54,24 +49,23 @@ public:
     
     virtual const runtime::DataRef getParameter(const unsigned int id) const;
     virtual void setParameter(const unsigned int id, const runtime::Data& value);
-    virtual void activate();
-    virtual void deactivate();
-    virtual void execute(runtime::DataProvider& provider);
+    
+protected:
+    virtual void initialize();
+    virtual const std::vector<const runtime::Output*> setupOutputs();
+    virtual const std::vector<const runtime::Parameter*> setupParameters();
+    
+    runtime::UInt32 width() const { return m_width; }
+    runtime::UInt32 height() const { return m_height; }
     
 private:
     static const std::string PACKAGE;
     static const runtime::Version VERSION; 
     
     static const std::vector<const runtime::Input*> setupInputs();
-    static const std::vector<const runtime::Output*> setupOutputs();
-    static const std::vector<const runtime::Parameter*> setupParameters();
     
-    Decoder* m_decoder;
-    runtime::Enum m_codecType;
-    runtime::Enum m_direction;
     runtime::UInt32 m_width;
     runtime::UInt32 m_height;
-    unsigned int m_currentPattern;
 }; 
       
 }

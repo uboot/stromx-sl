@@ -47,11 +47,7 @@ const std::string DecodeBase::PACKAGE(STROMX_SL_PACKAGE_NAME);
 const runtime::Version DecodeBase::VERSION(0, 1, 0);
     
 DecodeBase::DecodeBase(const std::string & type)
-    : OperatorKernel(type, PACKAGE, VERSION, setupInputs(), setupOutputs(), setupParameters())
-    , m_decoder(0)
-    , m_codecType(codecTypeGrayCode)
-    , m_direction(CodecDirBoth)
-    , m_currentPattern(0)
+    : OperatorKernel(type, PACKAGE, VERSION)
 {
 }
 
@@ -59,14 +55,10 @@ const runtime::DataRef DecodeBase::getParameter(const unsigned int id) const
 {
     switch(id)
     {
-    case CODEC_TYPE:
-        return m_codecType;
     case WIDTH:
         return m_width;
     case HEIGHT:
         return m_height;
-    case DIRECTION:
-        return m_direction;
     default:
         throw WrongParameterId(id, *this);
     }
@@ -78,12 +70,6 @@ void DecodeBase::setParameter(const unsigned int id, const runtime::Data& value)
     {
         switch(id)
         {
-        case CODEC_TYPE:
-            m_codecType = data_cast<Enum>(value);
-            break;
-        case DIRECTION:
-            m_direction = data_cast<Enum>(value);
-            break;
         case WIDTH:
             m_width = data_cast<UInt32>(value);
             break;
@@ -100,50 +86,9 @@ void DecodeBase::setParameter(const unsigned int id, const runtime::Data& value)
     }
 }
 
-void DecodeBase::activate()
+void DecodeBase::initialize()
 {
-    m_decoder = Decoder::NewDecoder(CodecType(int(m_codecType)), m_width,
-                                    m_height, CodecDir(int(m_direction)));
-    m_currentPattern = 0;
-}
-
-void DecodeBase::deactivate()
-{
-    delete m_decoder;
-}
-
-void DecodeBase::execute(runtime::DataProvider& provider)
-{
-    Id2DataPair inputMapper(PATTERN);
-    provider.receiveInputData(inputMapper);
-    ReadAccess access(inputMapper.data());
-    
-    const Image & image = access.get<Image>();
-    cv::Mat cvImage = cvsupport::getOpenCvMat(image);
-    m_decoder->setFrame(m_currentPattern, cvImage);
-    m_currentPattern++;
-    
-    if (m_currentPattern == m_decoder->getNPatterns())
-    {
-        cv::Mat cvHorizontal(m_height, m_width, CV_32F);
-        cv::Mat cvVertical(m_height, m_width, CV_32F);
-        cv::Mat cvShading;
-        cv::Mat cvMask;
-        
-        m_decoder->decodeFrames(cvHorizontal, cvVertical, cvMask, cvShading);
-        
-        DataContainer horizontal(new cvsupport::Matrix(cvHorizontal));
-        DataContainer vertical(new cvsupport::Matrix(cvVertical));
-        DataContainer mask(new cvsupport::Image(cvMask));
-        DataContainer shading(new cvsupport::Image(cvShading));
-        
-        provider.sendOutputData(
-            Id2DataPair(HORIZONTAL, horizontal) &&
-            Id2DataPair(VERTICAL, vertical) &&
-            Id2DataPair(MASK, mask) &&
-            Id2DataPair(SHADING, shading)
-        );
-    }
+    OperatorKernel::initialize(setupInputs(), setupOutputs(), setupParameters());
 }
 
 const std::vector<const runtime::Input*> DecodeBase::setupInputs()
@@ -160,53 +105,12 @@ const std::vector<const runtime::Input*> DecodeBase::setupInputs()
 
 const std::vector<const runtime::Output*> DecodeBase::setupOutputs()
 {
-    std::vector<const runtime::Output*> outputs;
-    
-    Output* horizontal = new Output(HORIZONTAL, runtime::Variant::FLOAT_32_MATRIX);
-    horizontal->setTitle(L_("Horizontal encoding"));
-    horizontal->setOperatorThread(OUTPUT_THREAD);
-    horizontal->setVisualization(Variant::IMAGE);
-    outputs.push_back(horizontal);
-    
-    Output* vertical = new Output(VERTICAL, runtime::Variant::FLOAT_32_MATRIX);
-    vertical->setTitle(L_("Vertical encoding"));
-    vertical->setOperatorThread(OUTPUT_THREAD);
-    horizontal->setVisualization(Variant::IMAGE);
-    outputs.push_back(vertical);
-    
-    Output* shading = new Output(SHADING, runtime::Variant::MONO_8_IMAGE);
-    shading->setTitle(L_("Shading"));
-    shading->setOperatorThread(OUTPUT_THREAD);
-    outputs.push_back(shading);
-    
-    Output* mask = new Output(MASK, runtime::Variant::MONO_8_IMAGE);
-    mask->setTitle(L_("Mask"));
-    mask->setOperatorThread(OUTPUT_THREAD);
-    outputs.push_back(mask);
-    
-    return outputs;
+    return std::vector<const runtime::Output*>();
 }
 
 const std::vector<const runtime::Parameter*> DecodeBase::setupParameters()
 {
     std::vector<const Parameter*> parameters;
-    
-    EnumParameter* codecType = new EnumParameter(CODEC_TYPE);
-    codecType->setTitle(L_("Codec"));
-    codecType->setAccessMode(Parameter::INITIALIZED_WRITE);
-    codecType->add(EnumDescription(Enum(codecTypePhaseShift2x3), L_("Phase shift 2x3")));
-    codecType->add(EnumDescription(Enum(codecTypePhaseShift3), L_("Phase shift 3")));
-    codecType->add(EnumDescription(Enum(codecTypePhaseShift3FastWrap), L_("Phase shift 3 fast wrap")));
-    codecType->add(EnumDescription(Enum(codecTypePhaseShift3Unwrap), L_("Phase shift 3 unwrap")));
-    codecType->add(EnumDescription(Enum(codecTypePhaseShift4), L_("Phase shift 4")));
-    codecType->add(EnumDescription(Enum(codecTypeGrayCode), L_("Gray code")));
-    codecType->add(EnumDescription(Enum(codecTypePhaseShift2p1), L_("Phase shift 2p1")));
-    codecType->add(EnumDescription(Enum(codecTypeFastRatio), L_("Fast ratio")));
-    codecType->add(EnumDescription(Enum(codecTypePhaseShiftModulated), L_("Phase shift modulated")));
-    codecType->add(EnumDescription(Enum(codecTypePhaseShiftMicro), L_("Phase shift micro")));
-    codecType->add(EnumDescription(Enum(codecTypePhaseShiftNStep), L_("Phase shift N step")));
-    parameters.push_back(codecType);
-    
     NumericParameter<UInt32>* width = new NumericParameter<UInt32>(WIDTH);
     width->setTitle(L_("Width"));
     width->setAccessMode(Parameter::INITIALIZED_WRITE);
@@ -216,14 +120,6 @@ const std::vector<const runtime::Parameter*> DecodeBase::setupParameters()
     height->setTitle(L_("Height"));
     height->setAccessMode(Parameter::INITIALIZED_WRITE);
     parameters.push_back(height);
-    
-    EnumParameter* direction = new EnumParameter(DIRECTION);
-    direction->setTitle(L_("Direction"));
-    direction->setAccessMode(Parameter::INITIALIZED_WRITE);
-    direction->add(EnumDescription(Enum(CodecDirHorizontal), L_("Horizontal")));
-    direction->add(EnumDescription(Enum(CodecDirVertical), L_("Vertical")));
-    direction->add(EnumDescription(Enum(CodecDirBoth), L_("Both directions")));
-    parameters.push_back(direction);
                                 
     return parameters;
 }
