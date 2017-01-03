@@ -93,6 +93,8 @@ const std::vector<const runtime::Output*> Calibrate::setupOutputs()
     tvec->setRows(3);
     tvec->setCols(1);
     outputs.push_back(tvec);
+    
+    return outputs;
 }
 
 const std::vector<const runtime::Parameter*> Calibrate::setupParameters()
