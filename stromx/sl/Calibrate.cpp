@@ -145,6 +145,12 @@ const std::vector<const runtime::Output*> Calibrate::setupOutputs()
 const std::vector<const runtime::Parameter*> Calibrate::setupParameters()
 {
     std::vector<const Parameter*> parameters = DecodeBase::setupParameters();
+            
+    NumericParameter<UInt32>* numPoses = new NumericParameter<UInt32>(NUM_POSES);
+    numPoses->setAccessMode(runtime::Parameter::ACTIVATED_WRITE);
+    numPoses->setTitle(L_("Number of poses"));
+    numPoses->setMin(UInt32(1));
+    parameters.push_back(numPoses);
     
     NumericParameter<UInt32>* patternSizeXParameter = new NumericParameter<UInt32>(PARAMETER_PATTERN_SIZE_X);
     patternSizeXParameter->setAccessMode(runtime::Parameter::ACTIVATED_WRITE);

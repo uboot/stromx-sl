@@ -36,6 +36,7 @@ public:
     enum DataId
     {
         CALIBRATOR_TYPE = NUM_DATA_IDS,
+        NUM_POSES,
         PARAMETER_PATTERN_SIZE_X,
         PARAMETER_PATTERN_SIZE_Y,
         PARAMETER_SQUARE_SIZE,
